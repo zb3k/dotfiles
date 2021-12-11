@@ -6,16 +6,8 @@ starship
 
 
 ## Minimal for dotfiles
-bspwm
-sxhkd
-rofi
-dunst
-nitrogen
-pulseaudio-alsa 
-kitty
 kvantum-qt5
 pacman-contrib
-jq
 
 ## Base
 git
@@ -51,8 +43,6 @@ arandr
 lxappearance
 
 # AUR
-polybar 
-picom-ibhagwan-git
 pavucontrol 
 pywal-git
 nerd-fonts-hack
