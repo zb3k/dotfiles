@@ -156,7 +156,7 @@ if [ ! -e /usr/bin/yay ]; then
 	sudo pacman --noconfirm --needed -S git go
 	git clone https://aur.archlinux.org/yay.git /tmp/aur_install
 	cd /tmp/aur_install
-	makepkg -si
+	makepkg -si --noconfirm
 
 	cd $SCRIPT_DIR
 	rm -rf /tmp/aur_install
