@@ -141,6 +141,13 @@ link_dotfiles_to() {
 	done
 }
 
+install() {
+	local PACKAGE=$1
+	if [ ! -e /usr/bin/$PACKAGE ]; then
+		yay --noconfirm --needed -S $PACKAGE
+	fi
+}
+
 # ------------------------------------------------------------------------------
 # PUBLIC
 # ------------------------------------------------------------------------------
@@ -165,16 +172,16 @@ fi
 # Install packages
 # ------------------------------------------------------------------------------
 header "Install packages"
-yay --noconfirm --needed -S\
-	picom-ibhagwan-git\
-	bspwm\
-	sxhkd\
-	rofi\
-	dunst\
-	polybar\
-	nitrogen\
-	kitty\
-	jq
+
+install picom-ibhagwan-git
+install bspwm
+install sxhkd
+install rofi
+install dunst
+install polybar
+install nitrogen
+install kitty
+install jq
 
 # ------------------------------------------------------------------------------
 # Link config
