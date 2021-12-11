@@ -17,22 +17,21 @@ fi
 # fi
 
 # Gnome keyring
-dbus-update-activation-environment --systemd DISPLAY
-eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
-export SSH_AUTH_SOCKR
+# dbus-update-activation-environment --systemd DISPLAY
+# eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
+# export SSH_AUTH_SOCKR
 
 setxkbmap -layout us,ru -option "grp:caps_toggle,grp_led:caps" &
 
 # xsetroot -cursor_name left_ptr &
 
-wal -R &
+# wal -R &
 
-liquidctl initialize &
+# liquidctl initialize &
 
 dunst &
 
-# maestral start &
-~/.local/bin/maestral start &
+# ~/.local/bin/maestral start &
 
 picom &
 
