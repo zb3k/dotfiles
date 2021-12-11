@@ -135,7 +135,8 @@ link_dotfiles_to() {
 			# mkdir -p 
 			link_dotfiles_to $srcFile "$targetFile"
 		else
-			# symlink $srcFile $targetFile 
+			# symlink $srcFile $targetFile
+			printf "."
 		fi
 	done
 }
