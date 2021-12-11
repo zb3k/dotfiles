@@ -141,13 +141,6 @@ link_dotfiles_to() {
 	done
 }
 
-install() {
-	local PACKAGE=$1
-	if [ ! -e /usr/bin/$PACKAGE ]; then
-		yay --noconfirm --needed -S $PACKAGE
-	fi
-}
-
 # ------------------------------------------------------------------------------
 # PUBLIC
 # ------------------------------------------------------------------------------
@@ -172,18 +165,20 @@ fi
 # Install packages
 # ------------------------------------------------------------------------------
 header "Install packages"
-
-install picom-ibhagwan-git
-install bspwm
-install sxhkd
-install rofi
-install dunst
-install polybar
-install nitrogen
-install kitty
-install jq
+if [ ! -e /usr/bin/bspwm ]; then
+yay --noconfirm --needed -S\
+	picom-ibhagwan-git\
+	bspwm\
+	sxhkd\
+	rofi\
+	dunst\
+	polybar\
+	nitrogen\
+	kitty\
+	jq
+fi
 
 # ------------------------------------------------------------------------------
 # Link config
 # ------------------------------------------------------------------------------
-# link_dotfiles_to "$SCRIPT_DIR/theme" $HOME
+link_dotfiles_to "$SCRIPT_DIR/theme" $HOME
