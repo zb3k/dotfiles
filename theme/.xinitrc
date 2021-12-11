@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Is virtual machine
-IS_VM=$(systemd-detect-virt))
+IS_VM=$(systemd-detect-virt)
 
 if [ -f "$HOME/.Xresources" ]; then
     xrdb -merge "$HOME/.Xresources"
