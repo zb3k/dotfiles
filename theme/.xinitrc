@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Is virtual machine
+IS_VM=$(systemd-detect-virt))
+
 if [ -f "$HOME/.Xresources" ]; then
     xrdb -merge "$HOME/.Xresources"
 fi
@@ -33,7 +36,7 @@ dunst &
 
 # ~/.local/bin/maestral start &
 
-# picom &
+[[ ! $IS_VM ]] && picom &
 
 nitrogen --restore &
 
