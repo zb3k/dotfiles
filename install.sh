@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEBUG=0
+# DEBUG=1
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 RED='\033[0;31m'
