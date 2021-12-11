@@ -1,0 +1,116 @@
+/*-----------------------------------------------------------------------------------|
+| window {BOX:vertical}                                                              |
+| |-------------------------------------------------------------------------------|  |
+| | mainbox  {BOX:vertical}                                                       |  |
+| | |---------------------------------------------------------------------------| |  |
+| | | inputbar {BOX:horizontal}                                                 | |  |
+| | | |---------| |-| |---------------------------------|---| |---| |---| |---| | |  |
+| | | | prompt  | |:| | entry                           |#fr| | / | |#ns| |ci | | |  |
+| | | |---------| |_| |---------------------------------|---| |---| |---| |---| | |  |
+| | |---------------------------------------------------------------------------| |  |
+| |                                                                               |  |
+| | |---------------------------------------------------------------------------| |  |
+| | | message                                                                   | |  |
+| | | |-----------------------------------------------------------------------| | |  |
+| | | | textbox                                                               | | |  |
+| | | |-----------------------------------------------------------------------| | |  |
+| | |---------------------------------------------------------------------------| |  |
+| |                                                                               |  |
+| | |-----------------------------------------------------------------------------|  |
+| | | listview                                                                    |  |
+| | | |------------------------------------------------------------------------]  |  |
+| | | | element                                                                |  |  |
+| | | | |-----------------| |------------------------------------------------] |  |  |
+| | | | |element-icon     | |element-text                                    | |  |  |
+| | | | |-----------------| |------------------------------------------------| |  |  |
+| | | |------------------------------------------------------------------------]  |  |
+| | |-----------------------------------------------------------------------------|  |
+| |                                                                               |  |
+| | |---------------------------------------------------------------------------| |  |
+| | |  mode-switcher {BOX:horizontal}                                           | |  |
+| | | |---------------|   |---------------|  |--------------| |---------------| | |  |
+| | | | Button        |   | Button        |  | Button       | | Button        | | |  |
+| | | |---------------|   |---------------|  |--------------| |---------------| | |  |
+| | |---------------------------------------------------------------------------| |  |
+| |-------------------------------------------------------------------------------|  |
+|-----------------------------------------------------------------------------------*/
+
+@theme "colors.rasi"
+
+* {
+  background-color: transparent;
+  text-color: @theme-foreground;
+  font: @theme-font;
+}
+
+window {
+  width: 600px;
+  border-radius: @theme-radius;
+  background-color: @theme-background;
+  border: @theme-border-size;
+  border-color: @theme-border-color;
+}
+
+mainbox {
+  padding: @theme-v-spacing;
+ 
+}
+
+inputbar {
+    padding: @theme-h-spacing;
+    margin: @theme-h-spacing;
+    font: @theme-large-font;
+}
+
+prompt {
+  font: @theme-large-icon-font;
+  vertical-align: 0.5;
+  padding: @theme-h-spacing;
+  enabled: false;
+}
+entry {
+  font: @theme-icon-font;
+  margin: @theme-v-spacing;
+  padding: @theme-v-spacing;
+  vertical-align: 0.5;
+}
+
+listview{
+	lines: 5;
+	columns: 1;
+  padding: @theme-h-spacing;
+}
+
+element {
+  // padding: 0.3em;
+  padding: @theme-spacing;
+}
+
+element-icon {
+  size: @theme-icon-size;
+}
+
+element-text {
+  vertical-align: 0.5;
+  padding: @theme-h-spacing;
+}
+
+element.selected {
+  background-color: @theme-active-background;
+  text-color: @theme-active-foreground;
+  border-radius: @theme-element-radius;
+}
+
+// mode-switcher {
+//   padding: @theme-spacing;
+// }
+// button {
+//   text-color: @theme-active-background;
+//   border-radius: @theme-element-radius;
+//   font: @theme-icon-font;
+//   horizontal-align: 0.5;
+// }
+// button.selected {
+//   background-color: @theme-active-background;
+//   text-color: @theme-active-foreground;
+// }

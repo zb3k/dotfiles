@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# xdotool search --sync --limit 1 --class Rofi keyup --delay 0 Tab key --delay 0 Tab keyup --delay 0 Super_L keydown --delay 0 Super_L&
+
+# xdotool search --sync --limit 1 --class Rofi keydown --clearmodifiers Super_L keydown --clearmodifiers Tab &
+
+# xdotool search --sync --limit 1 --class Rofi keyup --delay 0 Super_L keydown --delay 0 Super_L &
+# xdotool search --sync --limit 1 --class Rofi keyup Enter &
+ 
+rofi \
+    -show window  \
+    -selected-row 0 \
+    -no-fixed-num-lines \
+    -auto-select\
+    -kb-cancel "Escape" \
+    # -kb-accept-entry "!Super_L-Tab,!Super_L,!Tab,Return"\
+    # -kb-row-down "Super_L+Tab,Down" \
+    # -kb-row-up "Super_L+Tab,Up" \
+    -theme-str 'inputbar { enabled: false; }'
+
+
+# xdotool keyup Tab
+# xdotool keydown Tab
