@@ -118,8 +118,8 @@ installXorg() {
 
 
 symlink() {
-	ln -sf $1 $2
-	debug "symlink" $1 $2
+	# ln -sf $1 $2
+	debug "ln -sf" $1 $2
 }
 
 link_dotfiles_to() {
