@@ -145,4 +145,14 @@ link_dotfiles_to() {
 
 # updateSystem
 
-link_dotfiles_to "$SCRIPT_DIR/theme" $HOME
+# link_dotfiles_to "$SCRIPT_DIR/theme" $HOME
+
+# Install AUR helper
+echo '==> Installing AUR'
+rm -rf /tmp/aur_install
+git clone https://aur.archlinux.org/yay.git /tmp/aur_install
+cd /tmp/aur_install
+makepkg -si
+
+cd $SCRIPT_DIR
+rm -rf /tmp/aur_install
