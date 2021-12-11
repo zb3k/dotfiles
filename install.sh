@@ -126,17 +126,17 @@ link_dotfiles_to() {
 	local DOTFILES_DIR="$1"
 	local TARGET_DIR="$2"
 
+	mkdir -p $TARGET_DIR
+
 	debug "link_dotfiles_to" $1 $2
 
 	for file in `ls -A $DOTFILES_DIR`; do
 		local srcFile="$DOTFILES_DIR/$file"
 		local targetFile="$TARGET_DIR/$file"
 		if [[ $file == '.config' ]]; then
-			# mkdir -p 
 			link_dotfiles_to $srcFile "$targetFile"
 		else
-			# symlink $srcFile $targetFile
-			printf "."
+			symlink $srcFile $targetFile
 		fi
 	done
 }
