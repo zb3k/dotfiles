@@ -132,9 +132,10 @@ link_dotfiles_to() {
 		local srcFile="$DOTFILES_DIR/$file"
 		local targetFile="$TARGET_DIR/$file"
 		if [[ $file == '.config' ]]; then
+			# mkdir -p 
 			link_dotfiles_to $srcFile "$targetFile"
 		else
-			symlink $srcFile $targetFile 
+			# symlink $srcFile $targetFile 
 		fi
 	done
 }
@@ -164,5 +165,14 @@ fi
 # ------------------------------------------------------------------------------
 # Install packages
 # ------------------------------------------------------------------------------
-
-yay -S --noconfirm picom-ibhagwan-git bspwm sxhkd rofi dunst polybar nitrogen kitty jq
+header "Install packages"
+yay --noconfirm --needed -S\
+	picom-ibhagwan-git\
+	bspwm\
+	sxhkd\
+	rofi\
+	dunst\
+	polybar\
+	nitrogen\
+	kitty\
+	jq
