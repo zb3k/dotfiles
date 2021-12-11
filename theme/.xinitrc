@@ -33,7 +33,7 @@ dunst &
 
 # ~/.local/bin/maestral start &
 
-picom &
+# picom &
 
 nitrogen --restore &
 
