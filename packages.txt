@@ -1,0 +1,9 @@
+bspwm
+picom-ibhagwan-git
+sxhkd
+rofi
+dunst
+polybar
+nitrogen
+kitty
+jq
