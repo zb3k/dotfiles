@@ -183,3 +183,6 @@ fi
 # Link config
 # ------------------------------------------------------------------------------
 link_dotfiles_to "$SCRIPT_DIR/theme" $HOME
+
+
+fc-cache -v
