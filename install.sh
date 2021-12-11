@@ -148,17 +148,16 @@ link_dotfiles_to() {
 # link_dotfiles_to "$SCRIPT_DIR/theme" $HOME
 
 # ------------------------------------------------------------------------------
-# Install AUR helper
+# Install AUR helper if needed
 # ------------------------------------------------------------------------------
 if [ ! -e /usr/bin/yay ]; then
     header 'Install AUR helper (yay)'
 	rm -rf /tmp/aur_install
 	sudo pacman --noconfirm --needed -S git go
 	git clone https://aur.archlinux.org/yay.git /tmp/aur_install
-	cd /tmp/aur_install
-	makepkg -si --noconfirm
-
-	cd $SCRIPT_DIR
-	rm -rf /tmp/aur_install
+	cd /tmp/aur_install 
+		&& makepkg -si --noconfirm 
+		&& cd $SCRIPT_DIR 
+		&& rm -rf /tmp/aur_install
 fi
 
