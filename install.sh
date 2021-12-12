@@ -20,7 +20,13 @@ CYAN='\033[0;36m'
 GREY='\033[0;37m'
 NC='\033[0m'
 
-print_header() { echo -e "$ORANGE##########   $1   ##########$NC"; sleep $WAIT_SECONDS; }
+print_hr() { printf "$GREY%*s\n$NC" "${COLUMNS:-$(tput cols)}" '' | tr ' ' -; }
+print_header() { 
+	print_hr
+	echo -e ${ORANGE}${1} ${BLUE}${2}$NC
+	print_hr
+	sleep $WAIT_SECONDS
+}
 print_success() { echo -e "$GREEN[ SUCCESS ]$NC"; }
 print_skipping() { echo -e "$CYAN[ SKIPPING ]$NC"; }
 
@@ -95,7 +101,7 @@ install_xorg() {
 }
 
 install_aur() {
-	print_header 'Install AUR helper (yay)'
+	print_header 'Install AUR helper' 'yay'
 	if [ -e /usr/bin/yay ]; then
 		print_skipping
 	else
@@ -110,9 +116,9 @@ install_aur() {
 }
 
 install_packages() {
-	print_header "Install packages [ $1 ]"
-	local FIRST_PACKAGE=$(head -n 1 $SCRIPT_DIR/$1)
-	if [ -e /usr/bin/$FIRST_PACKAGE ]; then
+	print_header "Install packages" "$1"
+	local LAST_PACKAGE=$(tail -n 1 $SCRIPT_DIR/$1)
+	if [ ! $LAST_PACKAGE ] || [ -e /usr/bin/$FIRST_PACKAGE ]; then
 		print_skipping
 	else
 		yay --noconfirm --needed -S - < $1
@@ -121,9 +127,20 @@ install_packages() {
 }
 
 install_dotfiles() {
-	print_header "Install dotfiles [ $1 ]"
+	print_header "Install dotfiles" "$1"
 	copy_or_link_dir "$SCRIPT_DIR/$1" $HOME	
 	print_success
+}
+
+exec_script() {
+	print_header "Run script" "$1"
+	local SCRIPT=$SCRIPT_DIR/$1
+	if [[ -f $SCRIPT ]]; then
+		$SCRIPT
+		print_success
+	else
+		print_skipping
+	fi
 }
 
 finalize() {
@@ -138,18 +155,20 @@ finalize() {
 
 settings
 
-# update_system
+update_system
 
-# install_xorg
+install_xorg
 
-# install_aur
+install_aur
 
-# install_packages packages.txt
+install_packages packages.txt
 
-# install_packages private-packages.txt
+install_packages private-packages.txt
 
 install_dotfiles "public"
 
 install_dotfiles "private"
 
-# finalize
+exec_script "private-install.sh"
+
+finalize
