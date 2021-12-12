@@ -143,23 +143,14 @@ finalize() {
 # ------------------------------------------------------------------------------
 
 settings
-
 update_system
-
 install_xorg
-
 install_aur
-
 install_packages "packages.txt"
-
 install_packages "private-packages.txt"
-
 install_dotfiles "public"
-
 install_dotfiles "private"
-
 exec_script "private-install.sh"
-
 finalize
 
-# startx
+# ------------------------------------------------------------------------------
