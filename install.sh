@@ -9,20 +9,12 @@ SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # Output helpers
 # ------------------------------------------------------------------------------
 
-BLACK='\e[30m'
-RED='\e[31m'
-GREEN='\e[32m'
-YELLOW='\e[33m'
-BLUE='\e[34m'
-PURPLE='\e[35m'
-CYAN='\e[36m'
-GREY='\e[37m'
+BLACK='\e[30m';RED='\e[31m';GREEN='\e[32m';YELLOW='\e[33m'
+BLUE='\e[34m';MAGENTA='\e[35m';CYAN='\e[36m';GRAY='\e[37m'
+BG_BLACK='\e[40m\e[30m';BG_RED='\e[41m\e[30m';BG_GREEN='\e[42m\e[30m';BG_YELLOW='\e[43m\e[30m'
+BG_BLUE='\e[44m\e[30m';BG_MAGENTA='\e[45m\e[30m';BG_CYAN='\e[46m\e[30m';BG_GRAY='\e[47m\e[30m'
 NC='\e[0m'
 HR=$(printf "%*s" "${COLUMNS:-$(tput cols)}" '' | tr ' ' '=')
-BG_RED='\e[41m\e[30m'
-BG_GREEN='\e[42m\e[30m'
-BG_YELLOW='\e[43m\e[30m'
-BG_CYAN='\e[46m\e[30m'
 
 print_header() { echo -e "\n$YELLOW$HR> $1 $BLUE$2$YELLOW\n$HR$NC\n"; sleep $WAIT_SECONDS; }
 print_success() { echo -e "$BG_GREEN SUCCESS $NC"; }
