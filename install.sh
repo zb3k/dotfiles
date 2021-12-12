@@ -21,12 +21,7 @@ GREY='\033[0;37m'
 NC='\033[0m'
 
 print_hr() { printf "$GREY%*s\n$NC" "${COLUMNS:-$(tput cols)}" '' | tr ' ' -; }
-print_header() { 
-	print_hr
-	echo -e ${ORANGE}${1} ${BLUE}${2}$NC
-	print_hr
-	sleep $WAIT_SECONDS
-}
+print_header() { print_hr; echo -e ${ORANGE}${1} ${BLUE}${2}$NC; print_hr; sleep $WAIT_SECONDS; }
 print_success() { echo -e "$GREEN[ SUCCESS ]$NC"; }
 print_skipping() { echo -e "$CYAN[ SKIPPING ]$NC"; }
 
