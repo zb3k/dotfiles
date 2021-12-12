@@ -29,11 +29,11 @@ debug() { [ $DEBUG == 1 ] && echo -e "$GREY[ DEBUG ] $RED$1 $BLUE$2 $YELLOW$3 $C
 
 create_dir_if_needed() {
 	[[ ! -w "$1" ]] && local SUDO_PREFIX="sudo "
-	$(${SUDO_PREFIX}mkdir -p "$1")
+	mkdir -p "$1"
 }
 
 link() {
-	# [[ $3 ]] && local CMD_PREFIX="sudo "
+	[[ $3 ]] && local CMD_PREFIX="sudo "
 	[[ ! -w $(dirname "$2") ]] && SUDO_PREFIX="sudo "
 	$(${SUDO_PREFIX}rm -rf "$2")
 	if [[ $SYMLINK_DOTFILES == 1 ]]; then
@@ -185,7 +185,6 @@ install_packages "$PRIVATE_DIR/packages.txt"
 install_dotfiles "$PRIVATE_DIR/dotfiles"
 install_system_files "$PRIVATE_DIR" "/etc"
 exec_script "$PRIVATE_DIR/install.sh"
-
 
 finalize
 
