@@ -4,8 +4,6 @@ DEBUG=0
 WAIT_SECONDS=0.5
 SYMLINK_DOTFILES=1
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-PRIVATE_DIR=$SCRIPT_DIR/private
-
 
 # ------------------------------------------------------------------------------
 # Output helpers
