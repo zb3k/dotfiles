@@ -1,12 +1,39 @@
-black        | #282c34 | rgb(40, 44, 52)   
-white        | #abb2bf | rgb(171, 178, 191)
-light-red    | #e06c75 | rgb(224, 108, 117)
-dark-red     | #be5046 | rgb(190, 80, 70)  
-green        | #98c379 | rgb(152, 195, 121)
-light-yellow | #e5c07b | rgb(229, 192, 123)
-dark-yellow  | #d19a66 | rgb(209, 154, 102)
-blue         | #61afef | rgb(97, 175, 239) 
-magenta      | #c678dd | rgb(198, 120, 221)
-cyan         | #56b6c2 | rgb(86, 182, 194) 
-gutter-grey  | #4b5263 | rgb(76, 82, 99)   
-comment-grey | #5c6370 | rgb(92, 99, 112)  
+## PACKAGES
+- starship
+- kvantum-qt5
+- pacman-contrib
+- pywal-git
+
+## PRIVATE PACKAGES
+- nvm
+- liquidctl
+- telegram-desktop
+- libreoffice
+- dbeaver
+- docker
+- docker-compose
+- nodejs-lts-gallium
+- yarn
+- python
+- python-pip
+- thunar 
+- thunar-archive-plugin
+- xarchiver
+- unzip
+- arandr
+- lxappearance
+- pavucontrol
+- ranger
+- firefox
+- feh
+- xdo
+- xautomation
+- wmctrl
+- mpd
+- zsh
+- ksnip
+- visual-studio-code-bin
+- gucharmap
+- networkmanager-dmenu-git
+- marktext-bin
+- webapp-manager

@@ -1,7 +1,8 @@
 #!/bin/bash
 
-DEBUG=yes
+DEBUG=0
 WAIT_SECONDS=0.5
+SYMLINK_DOTFILES=1
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 PRIVATE_DIR=$SCRIPT_DIR/private
 
@@ -19,35 +20,40 @@ CYAN='\033[0;36m'
 GREY='\033[0;37m'
 NC='\033[0m'
 
-print_header() { echo -e "$ORANGE##########[ $1 ]##########$NC"; sleep $WAIT_SECONDS; }
+print_header() { echo -e "$ORANGE##########   $1   ##########$NC"; sleep $WAIT_SECONDS; }
 print_success() { echo -e "$GREEN[ SUCCESS ]$NC"; }
 print_skipping() { echo -e "$CYAN[ SKIPPING ]$NC"; }
 
-debug() { [ $DEBUG == "yes" ] && echo -e "$GREY[ DEBUG ] $RED[ $1 ] $BLUE$2 $ORANGE$3 $CYAN$4 $NC"; }
+debug() { [ $DEBUG == "1" ] && echo -e "$GREY[ DEBUG ] $RED[ $1 ] $BLUE$2 $ORANGE$3 $CYAN$4 $NC"; }
 
 # ------------------------------------------------------------------------------
 # Common helpers
 # ------------------------------------------------------------------------------
 
 copy_or_link() {
-	debug "copy_or_link" $1 $2
-	# rm -rf $2
-	# ln -s $1 $2
-	# cp -r $1 $2
+	rm -rf "$2"
+	if [[ $SYMLINK_DOTFILES == "1" ]]; then
+		debug "LINK" "$1" "$2"
+		ln -s "$1" "$2"
+	else
+		debug "COPY" "$1" "$2"
+		cp -r "$1" "$2"
+	fi
 }
 
 copy_or_link_dir() {
-	debug "copy_or_link_dir" $1 $2
+	debug "LINK DIR" $1 $2
 	local SRC_DIR="$1"
 	local TARGET_DIR="$2"
-	mkdir -p $TARGET_DIR
-	for file in `ls -A $SRC_DIR`; do
+	local FORCE_LINK=$3
+	mkdir -p "$TARGET_DIR"
+	ls -bA -1 "$SRC_DIR" | while read file; do 
 		local SRC="$SRC_DIR/$file"
 		local TARGET="$TARGET_DIR/$file"
-		if [ -f $SRC ]; then
-			copy_or_link $SRC $TARGET
+		if [[ -d "$SRC" ]] && [ ! $FORCE_LINK ]; then
+			copy_or_link_dir "$SRC" "$TARGET" "FORCE_LINK"
 		else
-			copy_or_link_dir $SRC $TARGET
+			copy_or_link "$SRC" "$TARGET"
 		fi
 	done
 }
@@ -55,6 +61,17 @@ copy_or_link_dir() {
 # ------------------------------------------------------------------------------
 # Install functions
 # ------------------------------------------------------------------------------
+
+settings() {
+	print_header "Settings"
+	
+	if [ ! $SYMLINK_DOTFILES ]; then
+		echo -e "[0] Copy (default)\n[1] Symlink\n"
+		read -r -p "Use symlink or copy dotfiles: " SYMLINK_DOTFILES
+	fi
+
+	print_success
+}
 
 update_system() {
 	print_header "Update system"
@@ -93,8 +110,8 @@ install_aur() {
 }
 
 install_packages() {
-	print_header "Install packages"
-	local FIRST_PACKAGE=$(head -n 1 $1)
+	print_header "Install packages [ $1 ]"
+	local FIRST_PACKAGE=$(head -n 1 $SCRIPT_DIR/$1)
 	if [ -e /usr/bin/$FIRST_PACKAGE ]; then
 		print_skipping
 	else
@@ -104,17 +121,8 @@ install_packages() {
 }
 
 install_dotfiles() {
-	print_header "Install dotfiles : $1"
+	print_header "Install dotfiles [ $1 ]"
 	copy_or_link_dir "$SCRIPT_DIR/$1" $HOME	
-}
-
-prepare_storage() {
-	print_header "Prepare storage"
-	local STORAGE_DIR=$1
-	mkdir -p $STORAGE_DIR
-	mkdir -p $STORAGE_DIR/.config
-	mkdir -p $STORAGE_DIR/.fonts
-	mkdir -p $STORAGE_DIR/.scripts
 	print_success
 }
 
@@ -128,17 +136,20 @@ finalize() {
 # INSTALL
 # ------------------------------------------------------------------------------
 
+settings
+
 # update_system
 
 # install_xorg
 
 # install_aur
 
-# install_packages $SCRIPT_DIR/packages.txt
+# install_packages packages.txt
 
-# prepare_storage $PRIVATE_DIR
+# install_packages private-packages.txt
 
 install_dotfiles "public"
 
+install_dotfiles "private"
 
 # finalize
