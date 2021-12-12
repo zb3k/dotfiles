@@ -3,8 +3,8 @@
 DEBUG=1
 WAIT_SECONDS=0.5
 SYMLINK_DOTFILES=1
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-PRIVATE_DIR="$SCRIPT_DIR/private"
+SOURCE_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+PRIVATE_DIR="$SOURCE_DIR/private"
 
 # ------------------------------------------------------------------------------
 # Output helpers
@@ -115,7 +115,7 @@ install_aur() {
 		git clone https://aur.archlinux.org/yay.git /tmp/aur_install
 		cd /tmp/aur_install 
 		makepkg -si --noconfirm 
-		cd $SCRIPT_DIR 
+		cd $SOURCE_DIR 
 		rm -rf /tmp/aur_install
 	fi
 }
@@ -146,16 +146,16 @@ install_dotfiles() {
 }
 
 install_system_files() {
-	print_header "Install system files" "$1"
-	[[ -d "$1" ]] && link_files_deep "$1" "$2"
+	print_header "Install system files" "$1$2"
+	local SRC_DIR="$1$2"
+	[[ -d "$SRC_DIR" ]] && link_files_deep "$SRC_DIR" "$2"
 	print_success
 }
 
 exec_script() {
 	print_header "Run script" "$1"
-	local SCRIPT=$SCRIPT_DIR/$1
-	if [[ -f $SCRIPT ]]; then
-		$SCRIPT
+	if [[ -f $1 ]]; then
+		$1
 		print_success
 	else
 		print_skipping
@@ -172,18 +172,18 @@ finalize() {
 # INSTALL
 # ------------------------------------------------------------------------------
 
-# settings
-# update_system
-# install_xorg
-# install_aur
+settings
+update_system
+install_xorg
+install_aur
 
-install_packages "$SCRIPT_DIR/packages.txt"
-install_dotfiles "$SCRIPT_DIR/dotfiles"
-install_system_files "$SCRIPT_DIR" "etc"
+install_packages "$SOURCE_DIR/packages.txt"
+install_dotfiles "$SOURCE_DIR/dotfiles"
+install_system_files "$SOURCE_DIR" "/etc"
 
 install_packages "$PRIVATE_DIR/packages.txt"
 install_dotfiles "$PRIVATE_DIR/dotfiles"
-install_system_files "$PRIVATE_DIR" "etc"
+install_system_files "$PRIVATE_DIR" "/etc"
 exec_script "$PRIVATE_DIR/install.sh"
 
 
