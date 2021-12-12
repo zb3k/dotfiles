@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEBUG=0
+DEBUG=1
 WAIT_SECONDS=0.5
 SYMLINK_DOTFILES=1
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -9,21 +9,26 @@ SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # Output helpers
 # ------------------------------------------------------------------------------
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-ORANGE='\033[0;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-GREY='\033[0;37m'
-NC='\033[0m'
+BLACK='\e[30m'
+RED='\e[31m'
+GREEN='\e[32m'
+YELLOW='\e[33m'
+BLUE='\e[34m'
+PURPLE='\e[35m'
+CYAN='\e[36m'
+GREY='\e[37m'
+NC='\e[0m'
+HR=$(printf "%*s" "${COLUMNS:-$(tput cols)}" '' | tr ' ' '=')
+BG_RED='\e[41m\e[30m'
+BG_GREEN='\e[42m\e[30m'
+BG_YELLOW='\e[43m\e[30m'
+BG_CYAN='\e[46m\e[30m'
 
-print_hr() { printf "$GREY%*s\n$NC" "${COLUMNS:-$(tput cols)}" '' | tr ' ' -; }
-print_header() { print_hr; echo -e ${ORANGE}${1} ${BLUE}${2}$NC; print_hr; sleep $WAIT_SECONDS; }
-print_success() { echo -e "$GREEN[ SUCCESS ]$NC"; }
-print_skipping() { echo -e "$CYAN[ SKIPPING ]$NC"; }
+print_header() { echo -e "\n$YELLOW$HR> $1 $BLUE$2$YELLOW\n$HR$NC\n"; sleep $WAIT_SECONDS; }
+print_success() { echo -e "$BG_GREEN SUCCESS $NC"; }
+print_skipping() { echo -e "$BG_CYAN SKIPPING $NC"; }
 
-debug() { [ $DEBUG == "1" ] && echo -e "$GREY[ DEBUG ] $RED[ $1 ] $BLUE$2 $ORANGE$3 $CYAN$4 $NC"; }
+debug() { [ $DEBUG == "1" ] && echo -e "$GREY[ DEBUG ] $RED$1 $BLUE$2 $YELLOW$3 $CYAN$4 $NC"; }
 
 # ------------------------------------------------------------------------------
 # Common helpers
