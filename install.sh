@@ -63,12 +63,10 @@ copy_or_link_dir() {
 
 settings() {
 	print_header "Settings"
-	
 	if [ ! $SYMLINK_DOTFILES ]; then
 		echo -e "[0] Copy (default)\n[1] Symlink\n"
 		read -r -p "Use symlink or copy dotfiles: " SYMLINK_DOTFILES
 	fi
-
 	print_success
 }
 
@@ -110,11 +108,12 @@ install_aur() {
 
 install_packages() {
 	print_header "Install packages" "$1"
-	local LAST_PACKAGE=$(tail -n 1 $SCRIPT_DIR/$1)
-	if [ ! $LAST_PACKAGE ] || [ -e /usr/bin/$FIRST_PACKAGE ]; then
+	local FILE="$SCRIPT_DIR/$1"
+	local LAST_PACKAGE=$(tail -n 1 $FILE)
+	if [ ! $LAST_PACKAGE ] || [ -e /usr/bin/$LAST_PACKAGE ]; then
 		print_skipping
 	else
-		yay --noconfirm --needed -S - < $1
+		yay --noconfirm --needed -S - < $FILE
 		print_success
 	fi
 }
