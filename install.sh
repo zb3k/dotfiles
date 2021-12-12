@@ -178,7 +178,7 @@ install_xorg
 install_aur
 
 install_packages "$SOURCE_DIR/packages.txt"
-install_dotfiles "$SOURCE_DIR/dotfiles"
+install_dotfiles "$SOURCE_DIR/public"
 install_system_files "$SOURCE_DIR" "/etc"
 
 install_packages "$PRIVATE_DIR/packages.txt"
