@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+## Author  : Aditya Shakya
+## Mail    : adi1090x@gmail.com
+## Github  : @adi1090x
+## Twitter : @adi1090x
+
+# dir="~/.config/polybar/blocks/scripts/rofi"
+uptime=$(uptime -p | sed -e 's/up //g')
+
+rofi_command="rofi"
+
+# rofi_command="rofi -theme $dir/powermenu.rasi"
+
+#  echo -en "Firefox\0icon\x1fcode\n" | rofi -dmepu -show-icons 
+
+# Options
+shutdown="Shutdown"
+reboot="Restart"
+lock="Lock"
+suspend="Sleep"
+logout="Logout"
+
+# Confirmation
+# confirm_exit() {
+# 	rofi -dmenu\
+# 		-i\
+# 		-no-fixed-num-lines\
+# 		-p "Are You Sure? : "
+# }
+
+# # Message
+# msg() {
+# 	# rofi -theme "$dir/message.rasi" -e "Available Options  -  yes / y / no / n"
+# 	rofi -e "Available Options  -  yes / y / no / n"
+# }
+
+# Variable passed to rofi
+options=""
+options+="$lock\0icon\x1fsystem-lock-screen-symbolic\n"
+options+="$shutdown\0icon\x1fsystem-shutdown-symbolic\n"
+options+="$reboot\0icon\x1fsystem-reboot-symbolic\n"
+# options+="$suspend\0icon\x1fsystem-suspend-symbolic\n"
+options+="$logout\0icon\x1fsystem-log-out-symbolic"
+
+
+# chosen="$(echo -e "$options" | $rofi_command -p "Uptime: $uptime" -dmenu -selected-row 0)"
+chosen="$(echo -e "$options" | $rofi_command  -dmenu\
+    -selected-row 0\
+    -l 4\
+    -show-icons \
+    -theme-str 'inputbar { enabled: false; }'\
+    -theme-str 'window { width: 300px; }'\
+    # -theme-str '* { font: "Hack Nerd Font 16"; }'\
+    )"
+
+case $chosen in
+    $shutdown)
+        systemctl poweroff
+        ;;
+    $reboot)
+		systemctl reboot
+        ;;
+    $lock)
+		betterlockscreen -l
+        ;;
+    $suspend)
+		mpc -q pause
+		amixer set Master mute
+		systemctl suspend
+        ;;
+    $logout)
+        bspc quit
+        ;;
+esac
