@@ -4,6 +4,7 @@ DEBUG=1
 WAIT_SECONDS=0.5
 SYMLINK_DOTFILES=1
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+PRIVATE_DIR="$SCRIPT_DIR/private"
 
 # ------------------------------------------------------------------------------
 # Output helpers
@@ -20,36 +21,52 @@ print_header() { echo -e "\n$YELLOW$HR> $1 $BLUE$2$YELLOW\n$HR$NC\n"; sleep $WAI
 print_success() { echo -e "$BG_GREEN SUCCESS $NC"; }
 print_skipping() { echo -e "$BG_CYAN SKIPPING $NC"; }
 
-debug() { [ $DEBUG == "1" ] && echo -e "$GREY[ DEBUG ] $RED$1 $BLUE$2 $YELLOW$3 $CYAN$4 $NC"; }
+debug() { [ $DEBUG == 1 ] && echo -e "$GREY[ DEBUG ] $RED$1 $BLUE$2 $YELLOW$3 $CYAN$4 $NC"; }
 
 # ------------------------------------------------------------------------------
 # Common helpers
 # ------------------------------------------------------------------------------
 
-copy_or_link() {
-	rm -rf "$2"
-	if [[ $SYMLINK_DOTFILES == "1" ]]; then
+create_dir_if_needed() {
+	[[ ! -w "$1" ]] && local SUDO_PREFIX="sudo "
+	$(${SUDO_PREFIX}mkdir -p "$1")
+}
+
+link() {
+	# [[ $3 ]] && local CMD_PREFIX="sudo "
+	[[ ! -w $(dirname "$2") ]] && SUDO_PREFIX="sudo "
+	$(${SUDO_PREFIX}rm -rf "$2")
+	if [[ $SYMLINK_DOTFILES == 1 ]]; then
 		debug "LINK" "$1" "$2"
-		ln -s "$1" "$2"
+		$(${SUDO_PREFIX}ln -sf "$1" "$2")
 	else
 		debug "COPY" "$1" "$2"
-		cp -r "$1" "$2"
+		$(${SUDO_PREFIX}cp -rf "$1" "$2")
 	fi
 }
 
-copy_or_link_dir() {
-	debug "LINK DIR" $1 $2
+link_childs() {
+	debug "LINK_CHILDS" $1
 	local SRC_DIR="$1"
 	local TARGET_DIR="$2"
-	local FORCE_LINK=$3
-	mkdir -p "$TARGET_DIR"
-	ls -bA -1 "$SRC_DIR" | while read file; do 
+	create_dir_if_needed $TARGET_DIR
+	ls -bA -1 "$SRC_DIR" | while read file; do
+		link "$SRC_DIR/$file" "$TARGET_DIR/$file"
+	done
+}
+
+link_files_deep() {
+	debug "LINK_FILES_DEEP" $1 $2
+	local SRC_DIR="$1"
+	local TARGET_DIR="$2"
+	create_dir_if_needed $TARGET_DIR
+	ls -bA -1 "$SRC_DIR" | while read file; do
 		local SRC="$SRC_DIR/$file"
 		local TARGET="$TARGET_DIR/$file"
-		if [[ -d "$SRC" ]] && [ ! $FORCE_LINK ]; then
-			copy_or_link_dir "$SRC" "$TARGET" "FORCE_LINK"
+		if [[ -d "$SRC" ]]; then
+			link_files_deep "$SRC" "$TARGET"
 		else
-			copy_or_link "$SRC" "$TARGET"
+			link "$SRC" "$TARGET"
 		fi
 	done
 }
@@ -105,19 +122,32 @@ install_aur() {
 
 install_packages() {
 	print_header "Install packages" "$1"
-	local FILE="$SCRIPT_DIR/$1"
-	local LAST_PACKAGE=$(tail -n 1 $FILE)
+	[[ -f $1 ]] && local LAST_PACKAGE=$(tail -n 1 $1)
 	if [ ! $LAST_PACKAGE ] || [ -e /usr/bin/$LAST_PACKAGE ]; then
 		print_skipping
 	else
-		yay --noconfirm --needed -S - < $FILE
+		yay --noconfirm --needed -S - < $1
 		print_success
 	fi
 }
 
 install_dotfiles() {
 	print_header "Install dotfiles" "$1"
-	copy_or_link_dir "$SCRIPT_DIR/$1" $HOME	
+	ls -bA -1 "$1" | while read file; do 
+		local SRC="$1/$file"
+		local TARGET="$HOME/$file"
+		if [[ -d "$SRC" ]]; then
+			link_childs "$SRC" "$TARGET"
+		else
+			link "$SRC" "$TARGET"
+		fi
+	done
+	print_success
+}
+
+install_system_files() {
+	print_header "Install system files" "$1"
+	[[ -d "$1" ]] && link_files_deep "$1" "$2"
 	print_success
 }
 
@@ -142,15 +172,21 @@ finalize() {
 # INSTALL
 # ------------------------------------------------------------------------------
 
-settings
-update_system
-install_xorg
-install_aur
-install_packages "packages.txt"
-install_packages "private-packages.txt"
-install_dotfiles "public"
-install_dotfiles "private"
-exec_script "private-install.sh"
+# settings
+# update_system
+# install_xorg
+# install_aur
+
+install_packages "$SCRIPT_DIR/packages.txt"
+install_dotfiles "$SCRIPT_DIR/dotfiles"
+install_system_files "$SCRIPT_DIR" "etc"
+
+install_packages "$PRIVATE_DIR/packages.txt"
+install_dotfiles "$PRIVATE_DIR/dotfiles"
+install_system_files "$PRIVATE_DIR" "etc"
+exec_script "$PRIVATE_DIR/install.sh"
+
+
 finalize
 
 # ------------------------------------------------------------------------------
