@@ -28,20 +28,19 @@ debug() { [ $DEBUG == 1 ] && echo -e "$GREY[ DEBUG ] $RED$1 $BLUE$2 $YELLOW$3 $C
 # ------------------------------------------------------------------------------
 
 create_dir_if_needed() {
-	[[ ! -w "$1" ]] && local SUDO_PREFIX="sudo "
-	mkdir -p "$1"
+	[[ ! -w "$1" ]] && local CMD_PREFIX="sudo "
+	$(${CMD_PREFIX}mkdir -p "$1")
 }
 
 link() {
-	[[ $3 ]] && local CMD_PREFIX="sudo "
-	[[ ! -w $(dirname "$2") ]] && SUDO_PREFIX="sudo "
-	$(${SUDO_PREFIX}rm -rf "$2")
+	[[ ! -w $(dirname "$2") ]] && CMD_PREFIX="sudo "
+	$(${CMD_PREFIX}rm -rf "$2")
 	if [[ $SYMLINK_DOTFILES == 1 ]]; then
 		debug "LINK" "$1" "$2"
-		$(${SUDO_PREFIX}ln -sf "$1" "$2")
+		$(${CMD_PREFIX}ln -sf "$1" "$2")
 	else
 		debug "COPY" "$1" "$2"
-		$(${SUDO_PREFIX}cp -rf "$1" "$2")
+		$(${CMD_PREFIX}cp -rf "$1" "$2")
 	fi
 }
 
@@ -148,6 +147,7 @@ install_dotfiles() {
 install_system_files() {
 	print_header "Install system files" "$1$2"
 	local SRC_DIR="$1$2"
+	# sudo chown -R root:root $SRC_DIR
 	[[ -d "$SRC_DIR" ]] && link_files_deep "$SRC_DIR" "$2"
 	print_success
 }

@@ -30,14 +30,13 @@ configuration {
   drun-display-format: "{name}";
   window-format: "{t}";
   // window-thumbnail: true;
-
+  // dpi: env(DPI, 96);
   display-ssh: "";
   display-run: "";
   display-drun: "";
   display-window: "缾";
   display-combi: "";
   display-keys: "";
-
   me-select-entry: "MouseSecondary";
   me-accept-entry: "MousePrimary";
   // kb-mode-next: "";
