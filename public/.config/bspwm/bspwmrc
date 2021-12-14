@@ -4,14 +4,26 @@ pgrep -x sxhkd > /dev/null || sxhkd &
 
 ~/.config/polybar/launch.sh &
 
-bspc monitor -d TERM WEB CODE SRV NOTE CHAT MAIL TLS 
-# ZEN
 
-~/.scripts/bspwm-toggle-gap
+bspc monitor -d TERM WEB CODE SRV NOTE CHAT MAIL TLS 
+
+
+# ------------------------------------------------------------------------------
+# Style
+# ------------------------------------------------------------------------------
+
+bspc config border_width 2
+bspc config normal_border_color "#282c34"
+bspc config active_border_color "#5c6370"
+bspc config focused_border_color "#FF4B14"
+
+
+bspc config window_gap 10
+# ~/.scripts/bspwm-toggle-gap
 
 #Various settings
-bspc config gapless_monocle     false #Default setup uses negative padding, and gapless monocle looks really weird like that
-bspc config borderless_monocle  true
+bspc config gapless_monocle true #Default setup uses negative padding, and gapless monocle looks really weird like that
+bspc config borderless_monocle true
 bspc config single_monocle true
 bspc config paddingless_monocle false
 #bspc config ignore_ewmh_focus      true
@@ -27,13 +39,6 @@ bspc config focus_follows_pointer true
 
 #Settings for manual splitting
 bspc config split_ratio         0.50
-
-
-
-bspc config border_width 2
-bspc config normal_border_color "#282c34"
-bspc config active_border_color "#5c6370"
-bspc config focused_border_color "#5c6370"
 
 
 # bspc desktop CODE --layout monocle

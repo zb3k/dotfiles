@@ -2,12 +2,12 @@
   theme-background: #282c34;
   theme-foreground: #abb2bf;
   theme-border-color: #4b5263;
-  theme-border-size: 2px;
+  theme-border-size: 3px;
 
   theme-active-background: #4b5263;
   theme-active-foreground: #abb2bf;
 
-  theme-radius: 3px;
+  theme-radius: 8px;
   theme-element-radius: 3px;
 
   theme-icon-size: 40px;

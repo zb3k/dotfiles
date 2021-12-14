@@ -88,11 +88,13 @@ element {
 
 element-icon {
   size: @theme-icon-size;
+  text-color: inherit;
 }
 
 element-text {
   vertical-align: 0.5;
   padding: @theme-h-spacing;
+  text-color: inherit;
 }
 
 element.selected {
@@ -100,6 +102,7 @@ element.selected {
   text-color: @theme-active-foreground;
   border-radius: @theme-element-radius;
 }
+// element.selected element-text
 
 // mode-switcher {
 //   padding: @theme-spacing;
