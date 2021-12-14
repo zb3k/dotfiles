@@ -11,11 +11,11 @@ update_system
 install_xorg
 install_aur
 
-install_packages "./packages.txt"
-install_dotfiles "./public"
-install_system_files "./etc" "/etc"
+install_packages "packages.txt"
+install_dotfiles "public"
+install_system_files "etc"
 
-exec_script "./private/install.sh"
+exec_script "private/install.sh"
 
 finalize
 

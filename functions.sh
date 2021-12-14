@@ -1,13 +1,19 @@
 #!/bin/bash
 
 
-SETTINGS_FILE='./settings.sh'
 
-# Defaults (can override in settings.sh)
+# Default settings (can override in settings.sh)
 DEBUG=0
 WAIT_SECONDS=0.5
 SYMLINK_DOTFILES=0
 DRIVER_PACKAGES=''
+
+# System variables
+SOURCE_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SETTINGS_FILE="$SOURCE_DIR/settings.sh"
+
+# Include settings if needed
+[ -f $SETTINGS_FILE ] && source $SETTINGS_FILE
 
 # ------------------------------------------------------------------------------
 # Output helpers
@@ -35,7 +41,7 @@ HR=$(printf "%*s" "$COLS" '' | tr ' ' '=')
 
 print_header() {
 	local CURRENT_FOLDER=$(basename $(pwd))
-	echo -e "\n$YELLOW$HR> $1 $BLUE$2$GRAY - [ $CURRENT_FOLDER ]$YELLOW\n$HR$NC\n"
+	echo -e "\n$YELLOW$HR> $1 $BLUE$2$GRAY [ $CURRENT_FOLDER ]$YELLOW\n$HR$NC\n"
 	sleep $WAIT_SECONDS
 }
 
@@ -110,7 +116,7 @@ settings() {
 	else
 		# SYMLINK_DOTFILES
 		echo -e "[0] Copy (default)\n[1] Symlink\n"
-		read -r -p "Use symlink or copy dotfiles: " SYMLINK_DOTFILES
+		read -r -p "Use symlink or copy dotfiles: " SYMLINK_DOTFILES1
 
 		# DRIVER_PACKAGES
 		echo -e "[0] No (default)\n[1] Intel\n[2] AMD\n[3] NVidia\n"
@@ -128,11 +134,9 @@ settings() {
 		echo "WAIT_SECONDS=$WAIT_SECONDS" >> $SETTINGS_FILE
 		echo "SYMLINK_DOTFILES=$SYMLINK_DOTFILES" >> $SETTINGS_FILE
 		echo "DRIVER_PACKAGES='$DRIVER_PACKAGES'" >> $SETTINGS_FILE
-
 		print_success
 	fi
-	
-	source $SETTINGS_FILE
+
 }
 
 update_system() {
@@ -169,19 +173,23 @@ install_aur() {
 
 install_packages() {
 	print_header "Install packages" "$1"
-	[[ -f $1 ]] && local LAST_PACKAGE=$(tail -n 1 $1)
+	local PWD=$(pwd);
+	local PACKAGES_FILE="$PWD/$1";
+	[[ -f $PACKAGES_FILE ]] && local LAST_PACKAGE=$(tail -n 1 $PACKAGES_FILE)
 	if [ ! $LAST_PACKAGE ] || [ -e /usr/bin/$LAST_PACKAGE ]; then
 		print_skipping
 	else
-		yay --noconfirm --needed -S - < $1
+		yay --noconfirm --needed -S - < $PACKAGES_FILE
 		print_success
 	fi
 }
 
 install_dotfiles() {
 	print_header "Install dotfiles" "$1"
-	ls -bA -1 "$1" | while read file; do 
-		local SRC="$1/$file"
+	local PWD=$(pwd);
+	local SRC_DIR="$PWD/$1";
+	ls -bA -1 "$SRC_DIR" | while read file; do 
+		local SRC="$SRC_DIR/$file"
 		local TARGET="$HOME/$file"
 		if [[ -d "$SRC" ]]; then
 			link_childs "$SRC" "$TARGET"
@@ -193,8 +201,11 @@ install_dotfiles() {
 }
 
 install_system_files() {
-	print_header "Install system files" "$1 => $2"
-	[[ -d "$1" ]] && link_files_deep "$1" "$2"
+	print_header "Install system files" "$1"
+	local PWD=$(pwd);
+	local SRC_DIR="$PWD/$1";
+	local TARGET_DIR="/$1"
+	[[ -d "$SRC_DIR" ]] && link_files_deep "$SRC_DIR" "$TARGET_DIR"
 	print_success
 }
 
