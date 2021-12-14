@@ -1,24 +1,22 @@
 #!/bin/bash
 
-SOURCE_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-POSTINSTALL_SCRIPT="$SOURCE_DIR/private/install.sh"
-RUN="$SOURCE_DIR/run.sh"
+source functions.sh
 
 # ------------------------------------------------------------------------------
 # INSTALL
 # ------------------------------------------------------------------------------
 
-# $RUN settings
-$RUN update_system
-$RUN install_xorg
-$RUN install_aur
+settings
+update_system
+install_xorg
+install_aur
 
-$RUN install_packages "$SOURCE_DIR/packages.txt"
-$RUN install_dotfiles "$SOURCE_DIR/public"
-$RUN install_system_files "$SOURCE_DIR" "/etc"
+install_packages "./packages.txt"
+install_dotfiles "./public"
+install_system_files "./etc" "/etc"
 
-$RUN exec_script "$POSTINSTALL_SCRIPT"
+exec_script "./private/install.sh"
 
-$RUN finalize
+finalize
 
 # ------------------------------------------------------------------------------

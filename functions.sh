@@ -1,27 +1,55 @@
 #!/bin/bash
 
-DEBUG=1
-WAIT_SECONDS=0.5
 
-SYMLINK_DOTFILES=1
-DRIVER_PACKAGES='nvidia nvidia-settings nvidia-utils'
+SETTINGS_FILE='./settings.sh'
+
+# Defaults (can override in settings.sh)
+DEBUG=0
+WAIT_SECONDS=0.5
+SYMLINK_DOTFILES=0
+DRIVER_PACKAGES=''
 
 # ------------------------------------------------------------------------------
 # Output helpers
 # ------------------------------------------------------------------------------
 
-BLACK='\e[30m';RED='\e[31m';GREEN='\e[32m';YELLOW='\e[33m'
-BLUE='\e[34m';MAGENTA='\e[35m';CYAN='\e[36m';GRAY='\e[37m'
-BG_BLACK='\e[40m\e[30m';BG_RED='\e[41m\e[30m';BG_GREEN='\e[42m\e[30m';BG_YELLOW='\e[43m\e[30m'
-BG_BLUE='\e[44m\e[30m';BG_MAGENTA='\e[45m\e[30m';BG_CYAN='\e[46m\e[30m';BG_GRAY='\e[47m\e[30m'
+COLS=${COLUMNS:-$(tput cols)}
+BLACK='\e[30m';
+RED='\e[31m';
+GREEN='\e[32m';
+YELLOW='\e[33m'
+BLUE='\e[34m';
+MAGENTA='\e[35m';
+CYAN='\e[36m';
+GRAY='\e[37m'
+BG_BLACK='\e[40m\e[30m';
+BG_RED='\e[41m\e[30m';
+BG_GREEN='\e[42m\e[30m';
+BG_YELLOW='\e[43m\e[30m'
+BG_BLUE='\e[44m\e[30m';
+BG_MAGENTA='\e[45m\e[30m';
+BG_CYAN='\e[46m\e[30m';
+BG_GRAY='\e[47m\e[30m'
 NC='\e[0m'
-HR=$(printf "%*s" "${COLUMNS:-$(tput cols)}" '' | tr ' ' '=')
+HR=$(printf "%*s" "$COLS" '' | tr ' ' '=')
 
-print_header() { echo -e "\n$YELLOW$HR> $1 $BLUE$2$YELLOW\n$HR$NC\n"; sleep $WAIT_SECONDS; }
-print_success() { echo -e "$BG_GREEN SUCCESS $NC"; }
-print_skipping() { echo -e "$BG_CYAN SKIPPING $NC"; }
+print_header() {
+	local CURRENT_FOLDER=$(basename $(pwd))
+	echo -e "\n$YELLOW$HR> $1 $BLUE$2$GRAY - [ $CURRENT_FOLDER ]$YELLOW\n$HR$NC\n"
+	sleep $WAIT_SECONDS
+}
 
-debug() { [ $DEBUG == 1 ] && echo -e "$GREY[ DEBUG ] $RED$1 $BLUE$2 $YELLOW$3 $CYAN$4 $NC"; }
+print_success() {
+	echo -e "$BG_GREEN SUCCESS $NC"
+}
+
+print_skipping() { 
+	echo -e "$BG_CYAN SKIPPING $NC"
+}
+
+debug() { 
+	[ $DEBUG == 1 ] && echo -e "$GREY[ DEBUG ] $RED$1 $BLUE$2 $YELLOW$3 $CYAN$4 $NC"
+}
 
 # ------------------------------------------------------------------------------
 # Common helpers
@@ -76,11 +104,36 @@ link_files_deep() {
 
 settings() {
 	print_header "Settings"
-	if [ ! $SYMLINK_DOTFILES ]; then
+	
+	if [ -f $SETTINGS_FILE ]; then
+		print_skipping
+	else
+		# SYMLINK_DOTFILES
 		echo -e "[0] Copy (default)\n[1] Symlink\n"
 		read -r -p "Use symlink or copy dotfiles: " SYMLINK_DOTFILES
+
+		# DRIVER_PACKAGES
+		echo -e "[0] No (default)\n[1] Intel\n[2] AMD\n[3] NVidia\n"
+		read -r -p "Install video card driver: " DRV_TYPE
+		case $DRV_TYPE in
+			[0][*]) DRIVER_PACKAGES="" ;;
+			[1]) DRIVER_PACKAGES='xf86-video-intel'  ;;
+			[2]) DRIVER_PACKAGES='xf86-video-amdgpu' ;;
+			[3]) DRIVER_PACKAGES='nvidia nvidia-settings nvidia-utils' ;;
+		esac
+
+		rm -f $SETTINGS_FILE
+		touch $SETTINGS_FILE
+
+		echo "DEBUG=$DEBUG" >> $SETTINGS_FILE
+		echo "WAIT_SECONDS=$WAIT_SECONDS" >> $SETTINGS_FILE
+		echo "SYMLINK_DOTFILES=$SYMLINK_DOTFILES" >> $SETTINGS_FILE
+		echo "DRIVER_PACKAGES='$DRIVER_PACKAGES'" >> $SETTINGS_FILE
+
+		print_success
 	fi
-	print_success
+	
+	source $SETTINGS_FILE
 }
 
 update_system() {
@@ -91,17 +144,12 @@ update_system() {
 
 install_xorg() {
 	print_header "Install xorg"
-	echo -e "[0] No (default)\n[1] Intel\n[2] AMD\n[3] NVidia\n"
-	read -r -p "Install video card driver: " DRV_TYPE
-	case $DRV_TYPE in
-		[0][*]) DRIVER_PACKAGES="" ;;
-		[1]) DRIVER_PACKAGES='xf86-video-intel'  ;;
-		[2]) DRIVER_PACKAGES='xf86-video-amdgpu' ;;
-		[3]) DRIVER_PACKAGES='nvidia nvidia-settings nvidia-utils' ;;
-	esac
-	# sudo pacman -S --noconfirm --needed xorg xorg-xinit xorg-xinput $DRIVER_PACKAGES
-	sudo pacman -S --noconfirm --needed xorg-server xorg-utils xorg-apps $DRIVER_PACKAGES
-	print_success
+	if [ -e /usr/bin/startx ]; then
+		print_skipping
+	else
+		sudo pacman -S --noconfirm --needed xorg-server xorg-utils xorg-apps $DRIVER_PACKAGES
+		print_success
+	fi
 }
 
 install_aur() {
@@ -146,22 +194,21 @@ install_dotfiles() {
 }
 
 install_system_files() {
-	print_header "Install system files" "$1$2"
-	local SRC_DIR="$1$2"
-	# sudo chown -R root:root $SRC_DIR
-	[[ -d "$SRC_DIR" ]] && link_files_deep "$SRC_DIR" "$2"
+	print_header "Install system files" "$1 => $2"
+	[[ -d "$1" ]] && link_files_deep "$1" "$2"
 	print_success
 }
 
 exec_script() {
-	# print_header "Run script" "$1"
+	print_header "Run script" "$1"
 	if [[ -f $1 ]]; then
+		print_success
 		local PWD=$(pwd)
-		local SCRIPT_DIR=$(dirname $1)
+		local SCRIPT_FILE="$PWD/$1"
+		local SCRIPT_DIR=$(dirname $SCRIPT_FILE)
 		cd $SCRIPT_DIR
-		$1
+		$SCRIPT_FILE
 		cd $PWD
-		# print_success
 	else
 		print_skipping
 	fi
@@ -172,5 +219,3 @@ finalize() {
 	fc-cache
 	print_success
 }
-
-$@
