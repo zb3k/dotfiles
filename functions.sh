@@ -122,9 +122,8 @@ settings() {
 			[3]) DRIVER_PACKAGES='nvidia nvidia-settings nvidia-utils' ;;
 		esac
 
-		rm -f $SETTINGS_FILE
+		# Save settings file
 		touch $SETTINGS_FILE
-
 		echo "DEBUG=$DEBUG" >> $SETTINGS_FILE
 		echo "WAIT_SECONDS=$WAIT_SECONDS" >> $SETTINGS_FILE
 		echo "SYMLINK_DOTFILES=$SYMLINK_DOTFILES" >> $SETTINGS_FILE
