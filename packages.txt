@@ -7,3 +7,7 @@ polybar
 nitrogen
 kitty
 jq
+python-pywal
+xsel
+alsa-utils
+playerctl

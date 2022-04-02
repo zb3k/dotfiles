@@ -1,9 +1,11 @@
 #!/bin/bash
 
-~/.scripts/bspwm-toggle-gap
+# ~/.scripts/bspwm-toggle-gap
 
-if [ $(bspc config top_padding) = 0 ]; then
-    polybar-msg cmd hide
-else
-    polybar-msg cmd show
-fi
+# if [ $(bspc config top_padding) = 0 ]; then
+#     polybar-msg cmd hide
+# else
+#     polybar-msg cmd show
+# fi
+
+polybar-msg cmd toggle

@@ -147,7 +147,7 @@ update_system() {
 
 install_xorg() {
 	print_header "Install xorg"
-	if [ -e /usr/bin/startx ]; then
+	if [[ $(yay -Q | grep "xorg-server ") ]]; then
 		print_skipping
 	else
 		sudo pacman -S --noconfirm --needed xorg-server xorg-utils xorg-apps $DRIVER_PACKAGES
@@ -176,7 +176,8 @@ install_packages() {
 	local PWD=$(pwd);
 	local PACKAGES_FILE="$PWD/$1";
 	[[ -f $PACKAGES_FILE ]] && local LAST_PACKAGE=$(tail -n 1 $PACKAGES_FILE)
-	if [ ! $LAST_PACKAGE ] || [ -e /usr/bin/$LAST_PACKAGE ]; then
+
+	if [ ! $LAST_PACKAGE ] || [[ $(yay -Q | grep "$LAST_PACKAGE ") ]]; then
 		print_skipping
 	else
 		yay --noconfirm --needed -S - < $PACKAGES_FILE

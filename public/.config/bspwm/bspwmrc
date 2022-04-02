@@ -15,10 +15,14 @@ bspc monitor -d TERM WEB CODE SRV NOTE CHAT MAIL TLS
 bspc config border_width 2
 bspc config normal_border_color "#282c34"
 bspc config active_border_color "#5c6370"
-bspc config focused_border_color "#FF4B14"
+bspc config focused_border_color "#617b94"
 
 
 bspc config window_gap 10
+bspc config top_padding 0
+bspc config left_padding 0
+bspc config right_padding 0
+bspc config bottom_padding 0
 # ~/.scripts/bspwm-toggle-gap
 
 #Various settings
@@ -46,12 +50,14 @@ bspc config split_ratio         0.50
 # Use command: xprop | grep WM_CLASS
 
 bspc rule -a kitty desktop="TERM" follow=on
+bspc rule -a Alacritty desktop="TERM" follow=on
 bspc rule -a firefox desktop="WEB" follow=on
 bspc rule -a Code desktop="CODE" follow=on
 bspc rule -a marktext desktop="NOTE" follow=on
 bspc rule -a beekeeper-studio desktop="SRV" follow=on
 bspc rule -a WebApp-WhatsApp4749 desktop="CHAT" follow=on state=pseudo_tiled center=true
 bspc rule -a TelegramDesktop desktop="CHAT" follow=on state=pseudo_tiled center=true
+bspc rule -a KotatogramDesktop desktop="CHAT" follow=on state=pseudo_tiled center=true
 bspc rule -a Mailspring desktop="MAIL" follow=on
 
 # bspc rule -a Thunar state=pseudo_tiled

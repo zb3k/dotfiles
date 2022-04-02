@@ -20,13 +20,56 @@ super + space
 # 	#rofi -show window
 
 # Powermenu
-super + alt + Escape
+super + Escape
 	~/.scripts/rofi-powermenu
 
 # Reload sxhkd configuration files
-super + Escape
+super + alt + Escape
 	pkill -usr1 -x sxhkd; notify-send 'sxhkd' 'Reloaded config'
 	# pkill -USR1 -x sxhkd && notify-send "sxhkd reloaded"
+
+# restart bspwm
+super + alt + r
+	bspc wm -r; notify-send 'bspwm' 'Reloaded'
+
+# ------------------------------------------------------------------------------
+# Disable paste on mouse middle click
+# ------------------------------------------------------------------------------
+~button2
+    echo -n | xsel -n -i
+~control + c
+    echo -n | xsel -n -i
+~control + shift + c
+    echo -n | xsel -n -i
+~control + x
+    echo -n | xsel -n -i
+
+
+# ------------------------------------------------------------------------------
+# Volume
+# ------------------------------------------------------------------------------
+
+XF86AudioMute
+	amixer -q set Master toggle
+
+XF86AudioLowerVolume
+	amixer -q set Master 5%-
+
+XF86AudioRaiseVolume
+	amixer -q set Master 5%+
+
+XF86AudioPlay
+	playerctl play-pause
+
+XF86AudioStop
+	playerctl stop
+
+XF86AudioPrev
+	playerctl previous
+
+XF86AudioNext
+	playerctl next
+
 
 # ------------------------------------------------------------------------------
 # Apps
@@ -56,19 +99,19 @@ super + r ; f
 
 # polybar toggle
 super + ctrl + p
-	polybar-toggle
+	~/.scripts/polybar-toggle
 
 # ------------------------------------------------------------------------------
 # bspwm hotkeys
 # ------------------------------------------------------------------------------
 
-# quit/restart bspwm
-super + alt + {q,r}
-	bspc {quit,wm -r}; notify-send 'bspwm' 'Reloaded'
+# close
+ctrl + q
+	bspc node -c
 
-# close and kill
-super + {_,shift + }w
-	bspc node -{c,k}
+# kill
+ctrl + shift + q
+	bspc node -k
 
 # alternate between the tiled and monocle layout
 super + m
