@@ -18,7 +18,7 @@ install_packages "packages/system-bluetooth.txt"
 install_packages "packages/wm.txt"
 install_packages "packages/wm-tools.txt"
 
-install_dotfiles "dotfiles"
+install_dotfiles "public"
 
 exec_script "postinstall.sh"
 
