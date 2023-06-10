@@ -56,3 +56,9 @@ install_dotfiles "dotfiles"
 - https://github.com/Templarian/MaterialDesign-Webfont
 - https://github.com/vinceliuice/Tela-circle-icon-theme
 
+## Postinstall 
+
+```bash
+systemctl enable bluetooth
+systemctl start bluetooth
+```
