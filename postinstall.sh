@@ -18,7 +18,7 @@ fi
 
 # Tela circle icons
 print_header "Tela circle icons"
-local PWD=$(pwd)
+PWD=$(pwd)
 git clone https://github.com/vinceliuice/Tela-circle-icon-theme "/tmp/tela-circle-icon-theme"
 cd /tmp/tela-circle-icon-theme
 ./install.sh -a
