@@ -21,7 +21,7 @@ print_header "Tela circle icons"
 PWD=$(pwd)
 git clone https://github.com/vinceliuice/Tela-circle-icon-theme "/tmp/tela-circle-icon-theme"
 cd /tmp/tela-circle-icon-theme
-./install.sh -a
+./install.sh nord
 cd $PWD
 rm -rf /tmp/tela-circle-icon-theme
 print_success
