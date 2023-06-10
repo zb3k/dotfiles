@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source functions.sh
+
+
 # systemctl enable bluetooth
 # systemctl start bluetooth
 
