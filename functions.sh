@@ -123,7 +123,7 @@ settings() {
 		read -r -p "Install video card driver: " DRV_TYPE
 		case $DRV_TYPE in
 			[0][*]) DRIVER_PACKAGES="" ;;
-			[1]) DRIVER_PACKAGES='xf86-video-intel vulkan-intel lib32-vulkan-intel'  ;;
+			[1]) DRIVER_PACKAGES='xf86-video-intel'  ;;
 			[2]) DRIVER_PACKAGES='xf86-video-amdgpu' ;;
 			[3]) DRIVER_PACKAGES='nvidia nvidia-settings nvidia-utils' ;;
 		esac
@@ -149,7 +149,7 @@ install_xorg() {
 	if [[ $(yay -Q | grep "xorg-server ") ]]; then
 		print_skipping
 	else
-		sudo pacman -S --noconfirm --needed xorg-server xorg-utils xorg-apps $DRIVER_PACKAGES
+		sudo pacman -S --noconfirm --needed xorg-server xorg-apps xorg-xinit xterm xorg-fonts-100dpi xorg-fonts-75dpi autorandr $DRIVER_PACKAGES
 		print_success
 	fi
 }
@@ -226,6 +226,5 @@ exec_script() {
 
 finalize() {
 	print_header "Finalize"
-	fc-cache
 	print_success
 }
