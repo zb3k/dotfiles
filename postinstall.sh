@@ -2,6 +2,7 @@
 
 source functions.sh
 
+sudo bash -c 'echo "QT_QPA_PLATFORMTHEME=qt5ct" >> /etc/environment'
 
 # systemctl enable bluetooth
 # systemctl start bluetooth
