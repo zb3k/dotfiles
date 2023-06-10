@@ -159,13 +159,12 @@ install_aur() {
 	if [ -e /usr/bin/yay ]; then
 		print_skipping
 	else
-		local PWD=$(pwd)
 		rm -rf /tmp/aur_install
 		sudo pacman -S --noconfirm --needed go git
 		git clone https://aur.archlinux.org/yay.git /tmp/aur_install
 		cd /tmp/aur_install 
 		makepkg -si --noconfirm 
-		cd $PWD
+		cd $SOURCE_DIR
 		rm -rf /tmp/aur_install
 	fi
 }
