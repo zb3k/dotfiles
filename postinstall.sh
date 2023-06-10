@@ -5,9 +5,13 @@
 
 # Nordic theme
 print_header "Nordic theme"
-git clone https://github.com/EliverLara/Nordic "./public/.themes/Nordic"
-git clone -b darker https://github.com/EliverLara/Nordic "./public/.themes/Nordic-darker"
-print_success
+if [ -d ./public/.themes/Nordic ]; then
+    print_skipping
+else
+    git clone https://github.com/EliverLara/Nordic "./public/.themes/Nordic"
+    git clone -b darker https://github.com/EliverLara/Nordic "./public/.themes/Nordic-darker"
+    print_success
+fi
 
 # Tela circle icons
 print_header "Tela circle icons"
