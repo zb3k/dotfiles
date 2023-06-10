@@ -8,14 +8,23 @@ source functions.sh
 
 settings
 update_system
-install_xorg
 install_aur
+install_xorg
 
-install_packages "packages.txt"
-install_dotfiles "public"
-install_system_files "etc"
+install_packages "packages/system-alsa.txt"
+install_packages "packages/system-pipewire.txt"
+install_packages "packages/system-bluetooth.txt"
+
+install_packages "packages/wm.txt"
+install_packages "packages/wm-tools.txt"
+
+install_dotfiles "dotfiles"
+
+exec_script "postinstall.sh"
 
 exec_script "private/install.sh"
+
+# install_system_files "etc"
 
 finalize
 

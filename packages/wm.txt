@@ -1,0 +1,8 @@
+bspwm
+sxhkd
+rofi
+dunst
+polybar
+kitty
+
+picom-jonaburg-git

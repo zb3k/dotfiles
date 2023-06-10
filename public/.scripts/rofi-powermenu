@@ -37,12 +37,17 @@ logout="Logout"
 
 # Variable passed to rofi
 options=""
-options+="$lock\0icon\x1fsystem-lock-screen-symbolic\n"
-options+="$shutdown\0icon\x1fsystem-shutdown-symbolic\n"
-options+="$reboot\0icon\x1fsystem-reboot-symbolic\n"
-# options+="$suspend\0icon\x1fsystem-suspend-symbolic\n"
-options+="$logout\0icon\x1fsystem-log-out-symbolic"
+# options+="$lock\0icon\x1fsystem-lock-screen-symbolic\n"
+# options+="$shutdown\0icon\x1fsystem-shutdown-symbolic\n"
+# options+="$reboot\0icon\x1fsystem-reboot-symbolic\n"
+# # options+="$suspend\0icon\x1fsystem-suspend-symbolic\n"
+# options+="$logout\0icon\x1fsystem-log-out-symbolic"
 
+options+="$lock\0icon\x1fsystem-lock-screen\n"
+options+="$shutdown\0icon\x1fsystem-shutdown\n"
+options+="$reboot\0icon\x1fsystem-reboot\n"
+# options+="$suspend\0icon\x1fsystem-suspend\n"
+options+="$logout\0icon\x1fsystem-log-out"
 
 # chosen="$(echo -e "$options" | $rofi_command -p "Uptime: $uptime" -dmenu -selected-row 0)"
 chosen="$(echo -e "$options" | $rofi_command  -dmenu\
@@ -70,6 +75,9 @@ case $chosen in
 		systemctl suspend
         ;;
     $logout)
+        for window_id in $(bspc query -W); do
+            bspc window $window_id -c
+        done
         bspc quit
         ;;
 esac

@@ -1,24 +1,47 @@
 #! /bin/sh
 
+###############################################################################
+# AUTOSTART
+###############################################################################
+
+# Run keybindings daemon
 pgrep -x sxhkd > /dev/null || sxhkd &
 
+# Polybar
 ~/.config/polybar/launch.sh &
 
+# Run picom
+picom --experimental-backends &
 
-bspc monitor -d TERM WEB CODE SRV NOTE CHAT MAIL TLS 
+# Run notifications daemon
+dunst &
+
+# Run polkit daemon if doesn't started.
+[ -n "$(pidof lxpolkit)" ] || lxpolkit &
+
+# Set wallpapers
+nitrogen --restore &
 
 
-# ------------------------------------------------------------------------------
-# Style
-# ------------------------------------------------------------------------------
+###############################################################################
+# SETTINGS
+###############################################################################
 
-bspc config border_width 2
+setxkbmap -option grp:caps_toggle us,ru
+
+bspc monitor -d TERM WEB CODE DB CHAT MAIL NOTE 3D TLS ZEN
+
+###############################################################################
+# STYLE
+###############################################################################
+
+bspc config border_width 0
 bspc config normal_border_color "#282c34"
-bspc config active_border_color "#5c6370"
+bspc config active_border_color "#282c34"
 bspc config focused_border_color "#617b94"
 
 
-bspc config window_gap 10
+bspc config window_gap 8
 bspc config top_padding 0
 bspc config left_padding 0
 bspc config right_padding 0
@@ -42,23 +65,41 @@ bspc config remove_unplugged_monitors true
 bspc config focus_follows_pointer true
 
 #Settings for manual splitting
-bspc config split_ratio         0.50
+bspc config split_ratio 0.50
+
+
 
 
 # bspc desktop CODE --layout monocle
 
 # Use command: xprop | grep WM_CLASS
 
+# bspc rule -a Fusion360:Fusion360.exe desktop="NOTE" state=fullscreen monitor=DP-0 layer=above
+# bspc rule -a fusion360:fusion360.exe desktop="NOTE" state=fullscreen monitor=DP-0 layer=above
+
+bspc rule -a fusion360.exe desktop="3D" monitor=DP-0
+# bspc rule -a fusion360:fusion360.exe desktop="MAIL" follow=on monitor=DP-0 layer=above state=fullscreen
+# bspc rule -a Fusion360:Fusion360.exe desktop="3D" follow=on monitor=DP-0 layer=above state=fullscreen
+
+# bspc rule -a Fusion360.exe desktop="NOTE" follow=on state=floating center=true
+
 bspc rule -a kitty desktop="TERM" follow=on
 bspc rule -a Alacritty desktop="TERM" follow=on
 bspc rule -a firefox desktop="WEB" follow=on
+
 bspc rule -a Code desktop="CODE" follow=on
+bspc rule -a VSCodium desktop="CODE" follow=on
+
+
+bspc rule -a WebApp-TickTick5612 desktop="TODO" follow=on
 bspc rule -a marktext desktop="NOTE" follow=on
-bspc rule -a beekeeper-studio desktop="SRV" follow=on
-bspc rule -a WebApp-WhatsApp4749 desktop="CHAT" follow=on state=pseudo_tiled center=true
-bspc rule -a TelegramDesktop desktop="CHAT" follow=on state=pseudo_tiled center=true
-bspc rule -a KotatogramDesktop desktop="CHAT" follow=on state=pseudo_tiled center=true
+bspc rule -a beekeeper-studio desktop="DB" follow=on
+bspc rule -a WebApp-WhatsApp4749 desktop="CHAT" follow=on
+# bspc rule -a TelegramDesktop desktop="CHAT" follow=on
+# bspc rule -a KotatogramDesktop desktop="CHAT" follow=on
 bspc rule -a Mailspring desktop="MAIL" follow=on
+# bspc rule -a FreeCAD-link desktop="3D" follow=on
+
 
 # bspc rule -a Thunar state=pseudo_tiled
 
@@ -66,6 +107,8 @@ bspc rule -a feh state=floating center=true
 bspc rule -a KeePassXC state=floating center=true sticky=on
 bspc rule -a ksnip state=floating center=true
 bspc rule -a Colorgrab state=floating center=true
+bspc rule -a Qalculate-gtk state=floating center=true sticky=on
+
 
 # bspc rule -a kitty desktop='^1' state=floating follow=on
 # bspc rule -a Chromium desktop='^2'

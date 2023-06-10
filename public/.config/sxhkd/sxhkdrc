@@ -1,15 +1,15 @@
 # https://my-take-on.tech/2020/07/03/some-tricks-for-sxhkd-and-bspwm/
 
-# Show help
+# SYSTEM: Show help
 super + alt + slash
     ~/.scripts/sxhkd-help
 
-# Terminal emulator
-super + Return
+# SYSTEM: Open terminal
+super + space
 	kitty
 
-# Program launcher (rofi -drun)
-super + space
+# SYSTEM: Program launcher (rofi -drun)
+super + Return
 	rofi -show drun
 	# ~/.config/polybar/blocks/scripts/launcher.sh
 	# rofi -show run
@@ -19,18 +19,16 @@ super + space
 # 	~/.scripts/rofi-windows
 # 	#rofi -show window
 
-# Powermenu
+# SYSTEM: Power menu
 super + Escape
 	~/.scripts/rofi-powermenu
 
-# Reload sxhkd configuration files
+# SYSTEM: Reload sxhkd and bspwm
 super + alt + Escape
-	pkill -usr1 -x sxhkd; notify-send 'sxhkd' 'Reloaded config'
-	# pkill -USR1 -x sxhkd && notify-send "sxhkd reloaded"
+	pkill -usr1 -x sxhkd; \
+	bspc wm -r; \
+	notify-send 'BSPWM & SXHKD' 'Reloaded'
 
-# restart bspwm
-super + alt + r
-	bspc wm -r; notify-send 'bspwm' 'Reloaded'
 
 # ------------------------------------------------------------------------------
 # Disable paste on mouse middle click
@@ -46,117 +44,103 @@ super + alt + r
 
 
 # ------------------------------------------------------------------------------
-# Volume
+# Media keys
 # ------------------------------------------------------------------------------
+
+# Brightness
+XF86MonBrightness{Up,Down}
+	brightnessctl s 100{+,-}  
+
+# Volume control
+XF86Audio{Raise,Lower}Volume
+	amixer -q set Master 5%{+,-}
 
 XF86AudioMute
 	amixer -q set Master toggle
 
-XF86AudioLowerVolume
-	amixer -q set Master 5%-
+# Player control
+XF86Audio{Play,Stop,Prev,Next}
+	playerctl {play-pause,stop,previous,next}
 
-XF86AudioRaiseVolume
-	amixer -q set Master 5%+
 
-XF86AudioPlay
-	playerctl play-pause
-
-XF86AudioStop
-	playerctl stop
-
-XF86AudioPrev
-	playerctl previous
-
-XF86AudioNext
-	playerctl next
-
+# # Alt + Super to enter this mode, F6 to get out
+# super + ctrl + g: F6
+#     pkill -ALRM sxhkd; \
+# 	notify-send 'Game over!'
 
 # ------------------------------------------------------------------------------
-# Apps
+# Window hotkeys
 # ------------------------------------------------------------------------------
 
-# firefox
-super + r ; w
-  ~/.scripts/switch-or-run firefox
+# WINDOW: Close (kill)
+ctrl + {_,shift + } q
+	bspc node {-c,-k}
 
-# vscodec
-super + r ; c
-  ~/.scripts/switch-or-run code
-
-# thunar
-super + r ; f
-  ~/.scripts/switch-or-run thunar
-
-
-# # telegram
-# alt + m
-#   telegram-desktop
-
-# # ranger
-# alt + r
-#   urxvt -name Ranger -e ranger
-
-
-# polybar toggle
-super + ctrl + p
-	~/.scripts/polybar-toggle
-
-# ------------------------------------------------------------------------------
-# bspwm hotkeys
-# ------------------------------------------------------------------------------
-
-# close
-ctrl + q
-	bspc node -c
-
-# kill
-ctrl + shift + q
-	bspc node -k
-
-# alternate between the tiled and monocle layout
+# WINDOW: Toggle monocle/tiled layout
 super + m
 	bspc desktop -l next
 
-# send the newest marked node to the newest preselected node
-# super + y
-# 	bspc node newest.marked.local -n newest.!automatic.local
+# Swap window tree
+super + a
+    bspc node @/ -C forward
 
-# swap the current node and the biggest window
-# super + g
-# 	bspc node -s biggest.window
+# WINDOW: Set the window state (tiled, pseudo_tiled, floating, fullscreen)
+super + {t,shift + t,f,shift + F}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 
-# Rotate tree
-super + shift + {d,a}
-    bspc node @/ -C {forward,backward}
+# WINDOW: Resize window
+super + alt + {h,j,k,l}
+	{bspc node -z right -20 0; bspc node -z left +20 0, \
+	bspc node -z top 0 +20; bspc node -z bottom 0 -20, \
+	bspc node -z top 0 -20; bspc node -z bottom 0 +20, \
+	bspc node -z right +20 0; bspc node -z left -20 0} 
 
-# focus desktop
+# super + s : {h,j,k,l}
+#   STEP=20; SELECTION={1,2,3,4}; \
+#   bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
+#   bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
+
+
+# # expand a window by moving one of its side outward
+# super + alt + {h,j,k,l}
+# 	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+# # contract a window by moving one of its side inward
+# super + alt + shift + {h,j,k,l}
+# 	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+
+# WINDOW: Balance sizes
+super + b
+	bspc desktop 'focused.!user_tiled' -l tiled; \
+	t=vertical; \
+	while bspc node 'any.local.!'"$t"'.!leaf' -y "$t"; do :; done; \
+	bspc node '@/' -B
+
+# WINDOW: Toggle vertical/horizontal
+super + r
+	bspc node '@parent' -R 90
+
+# WINDOW: Focus next/prev window in current space
+super + {_,shift + }Tab
+	bspc node -f {next,prev}.local.!hidden.window
+
+# ------------------------------------------------------------------------------
+# Space
+# ------------------------------------------------------------------------------
+
+# SPACE: Focus workspace
 super + {1-9,0}
 	bspc desktop -f '^{1-9,10}'
 
-# Send to desktop
+# SPACE: Send to workspace
 super + shift + {1-9,0}
     bspc node -d '^{1-9,10}' --follow
-
-# set the window state
-super + {t,shift + t,s,f}
-	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 # # set the node flags
 # super + ctrl + {m,x,y,z}
 # 	bspc node -g {marked,locked,sticky,private}
-
-# Expand/contract a window by moving one of its side outward/inward
-super + shift + s : {h,j,k,l}
-    STEP=50; SELECTION={1,2,3,4}; \
-    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
-    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
-
-
-# ------------------------------------------------------------------------------
-# focus/swap
-# ------------------------------------------------------------------------------
-
 
 # # focus the node in the given direction
 # super + {_,shift + }{h,j,k,l}
@@ -166,23 +150,23 @@ super + shift + s : {h,j,k,l}
 # super + {p,b,comma,period}
 	bspc node -f @{parent,brother,first,second}
 
-# focus the next/previous window in the current desktop
-super + {_,shift + }c
-	bspc node -f {next,prev}.local.!hidden.window
-
-# # focus the next/previous desktop in the current monitor
+# SPACE: focus the next/prev space in the current monitor
 super + bracket{left,right}
 	bspc desktop -f {prev,next}.local
+
+# SPACE: Move to next/prev space
+super + ctrl + bracket{right,left}
+    bspc node -d {next,prev} -f
 
 # focus the last node/desktop
 # super + {grave,Tab}
 # 	bspc {node,desktop} -f last
 
 # focus the older or newer node in the focus history
-super + {o,i}
-	bspc wm -h off; \
-	bspc node {older,newer} -f; \
-	bspc wm -h on
+# super + {o,i}
+# 	bspc wm -h off; \
+# 	bspc node {older,newer} -f; \
+# 	bspc wm -h on
 
 
 # #

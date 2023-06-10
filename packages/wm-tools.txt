@@ -1,0 +1,9 @@
+lxsession-gtk3
+nitrogen
+kvantum
+qt5ct
+jq
+brightnessctl
+pavucontrol
+playerctl
+ksnip

@@ -38,10 +38,10 @@ BG_CYAN='\e[46m\e[30m';
 BG_GRAY='\e[47m\e[30m'
 NC='\e[0m'
 HR=$(printf "%*s" "$COLS" '' | tr ' ' '=')
-
+HR_ALT="$BG_YELLOW$HR$NC"
 print_header() {
 	local CURRENT_FOLDER=$(basename $(pwd))
-	echo -e "\n$YELLOW$HR> $1 $BLUE$2$GRAY [ $CURRENT_FOLDER ]$YELLOW\n$HR$NC\n"
+	echo -e "\n$HR_ALT\n\n    $YELLOW$1 $BLUE$2$GRAY [ $CURRENT_FOLDER ]\n\n$HR_ALT$NC\n"
 	sleep $WAIT_SECONDS
 }
 
@@ -116,14 +116,14 @@ settings() {
 	else
 		# SYMLINK_DOTFILES
 		echo -e "[0] Copy (default)\n[1] Symlink\n"
-		read -r -p "Use symlink or copy dotfiles: " SYMLINK_DOTFILES1
+		read -r -p "Use symlink or copy dotfiles: " SYMLINK_DOTFILES
 
 		# DRIVER_PACKAGES
 		echo -e "[0] No (default)\n[1] Intel\n[2] AMD\n[3] NVidia\n"
 		read -r -p "Install video card driver: " DRV_TYPE
 		case $DRV_TYPE in
 			[0][*]) DRIVER_PACKAGES="" ;;
-			[1]) DRIVER_PACKAGES='xf86-video-intel'  ;;
+			[1]) DRIVER_PACKAGES='xf86-video-intel vulkan-intel lib32-vulkan-intel'  ;;
 			[2]) DRIVER_PACKAGES='xf86-video-amdgpu' ;;
 			[3]) DRIVER_PACKAGES='nvidia nvidia-settings nvidia-utils' ;;
 		esac
@@ -136,7 +136,6 @@ settings() {
 		echo "DRIVER_PACKAGES='$DRIVER_PACKAGES'" >> $SETTINGS_FILE
 		print_success
 	fi
-
 }
 
 update_system() {
@@ -162,7 +161,7 @@ install_aur() {
 	else
 		local PWD=$(pwd)
 		rm -rf /tmp/aur_install
-		sudo pacman --noconfirm --needed -S go
+		sudo pacman -S --noconfirm --needed go git
 		git clone https://aur.archlinux.org/yay.git /tmp/aur_install
 		cd /tmp/aur_install 
 		makepkg -si --noconfirm 

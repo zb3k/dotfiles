@@ -1,0 +1,5 @@
+alsa
+alsa-utils
+alsa-firmware
+alsa-card-profiles
+alsa-plugins

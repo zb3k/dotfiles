@@ -1,20 +1,20 @@
 * {
-  theme-background: #282c34;
+  theme-background: #14161a;
   theme-foreground: #abb2bf;
   theme-border-color: #4b5263;
   theme-border-size: 3px;
 
   theme-active-background: #4b5263;
-  theme-active-foreground: #abb2bf;
+  theme-active-foreground: #FFF;
 
   theme-radius: 8px;
   theme-element-radius: 3px;
-
+  
   theme-icon-size: 40px;
-  theme-font: "Hack Nerd Font 14";
-  theme-large-font: "Hack Nerd Font 14";
-  theme-icon-font: "Hack Nerd Font Mono 20";
-  theme-large-icon-font: "Hack Nerd Font Mono 40";
+  theme-font: "Hack Font 14";
+  theme-large-font: "Hack Font 14";
+  theme-icon-font: "Hack Font 20";
+  theme-large-icon-font: "Hack Font 40";
 
   theme-spacing: 5px;
   theme-h-spacing: 0 5px;

@@ -13,7 +13,6 @@
 - **sxhkd** - keybinding daemon
 - **dunst** - notification daemon
 - **rofi** - app launcher
-- **kitty** - terminal emulator
 
 ## Установка
 
@@ -23,7 +22,7 @@ cd dotfiles
 ./install.sh
 ```
 
-## Приватные файлы конфигураций
+## Приватные файлы конфигураций (deprecated)
 
 Вы можете дополнить установку своими собственными файлами конфигурации.
 
@@ -51,8 +50,9 @@ install_dotfiles "dotfiles"
 
 `wip...`
 
-## Опциональные пакеты
+## GTK Themes
 
-- kvantum-qt5
-- pacman-contrib
-- pywal-git
+- https://github.com/EliverLara/Nordic (darker branch for gtk, master branch for kvantum)
+- https://github.com/Templarian/MaterialDesign-Webfont
+- https://github.com/vinceliuice/Tela-circle-icon-theme
+

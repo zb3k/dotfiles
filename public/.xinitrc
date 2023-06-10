@@ -9,12 +9,8 @@ if [ -f "$HOME/.Xmodmap" ]; then
 fi
 
 # Private part .xinitrc
-if [ -f "$HOME/.private/.xinitrc" ]; then
-    source $HOME/.private/.xinitrc
-fi
-
-dunst &
-picom &
-nitrogen --restore &
+# if [ -f "$HOME/.private/.xinitrc" ]; then
+#     source $HOME/.private/.xinitrc
+# fi
 
 exec bspwm
