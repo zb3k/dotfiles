@@ -3,6 +3,11 @@
 source functions.sh
 
 
+
+# ------------------------------------------------------------------------------
+# Setup QT theme engine
+# ------------------------------------------------------------------------------
+
 print_header "Set qt theme engine"
 if [[ $(cat /etc/environment | grep QT_QPA_PLATFORMTHEME) ]]; then
     print_skipping
@@ -11,11 +16,21 @@ else
     print_success
 fi
 
-# default wallpaper
-nitrogen --set-zoom-fill --save ~/.wallpapers/rounded/sea-rock.png
 
+# ------------------------------------------------------------------------------
+# Default wallpaper
+# ------------------------------------------------------------------------------
 
+print_header "Set default wallpaper"
+feh --bg-fill ~/.wallpapers/rounded/sea-rock.png
+print_success
 
+# ------------------------------------------------------------------------------
+# Enable bluetooth
+# ------------------------------------------------------------------------------
+
+# todo: use settings
+print_header "Enable bluetooth"
 if [[ $(systemctl status bluetooth | grep "active (running)") ]]; then
     print_skipping
 else
@@ -25,7 +40,10 @@ else
 fi
 
 
-# Nordic theme
+# ------------------------------------------------------------------------------
+# Install Nordic theme
+# ------------------------------------------------------------------------------
+
 print_header "Nordic theme"
 if [ -d ./public/.themes/Nordic ]; then
    print_skipping
@@ -35,12 +53,20 @@ else
     print_success
 fi
 
-# Tela circle icons
+
+# ------------------------------------------------------------------------------
+# Install Tela circle icons
+# ------------------------------------------------------------------------------
+
 print_header "Tela circle icons"
-PWD=$(pwd)
-git clone https://github.com/vinceliuice/Tela-circle-icon-theme "/tmp/tela-circle-icon-theme"
-cd /tmp/tela-circle-icon-theme
-./install.sh nord
-cd $PWD
-rm -rf /tmp/tela-circle-icon-theme
-print_success
+if [ -d .~/.local/share/icons/Tela-circle-nord ]; then
+   print_skipping
+else
+    PWD=$(pwd)
+    git clone https://github.com/vinceliuice/Tela-circle-icon-theme "/tmp/tela-circle-icon-theme"
+    cd /tmp/tela-circle-icon-theme
+    ./install.sh nord
+    cd $PWD
+    rm -rf /tmp/tela-circle-icon-theme
+    print_success
+fi

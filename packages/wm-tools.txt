@@ -1,5 +1,5 @@
 lxsession-gtk3
-nitrogen
+feh
 kvantum
 qt5ct
 jq

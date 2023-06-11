@@ -20,7 +20,7 @@ dunst &
 [ -n "$(pidof lxpolkit)" ] || lxpolkit &
 
 # Set wallpapers
-nitrogen --restore &
+~/.fehbg &
 
 
 ###############################################################################
