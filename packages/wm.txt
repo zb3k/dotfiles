@@ -4,5 +4,4 @@ rofi
 dunst
 polybar
 kitty
-
-picom-jonaburg-git
+picom

@@ -41,7 +41,7 @@ HR=$(printf "%*s" "$COLS" '' | tr ' ' '=')
 HR_ALT="$BG_YELLOW$HR$NC"
 print_header() {
 	local CURRENT_FOLDER=$(basename $(pwd))
-	echo -e "\n$HR_ALT\n\n    $YELLOW$1 $BLUE$2$GRAY [ $CURRENT_FOLDER ]\n\n$HR_ALT$NC\n"
+	echo -e "\n$BG_YELLOW   $1   $NC $BLUE$2$GRAY [ $CURRENT_FOLDER ]$NC\n"
 	sleep $WAIT_SECONDS
 }
 
@@ -50,7 +50,7 @@ print_success() {
 }
 
 print_skipping() { 
-	echo -e "$BG_CYAN SKIPPING $NC"
+	echo -e "$BG_BLUE SKIPPING $NC"
 }
 
 debug() { 

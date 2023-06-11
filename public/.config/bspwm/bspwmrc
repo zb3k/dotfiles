@@ -11,7 +11,7 @@ pgrep -x sxhkd > /dev/null || sxhkd &
 ~/.config/polybar/launch.sh &
 
 # Run picom
-picom --experimental-backends &
+picom &
 
 # Run notifications daemon
 dunst &
