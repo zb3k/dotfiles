@@ -8,12 +8,14 @@ section_begin "public/postinstall"
 # Setup QT theme engine
 # ------------------------------------------------------------------------------
 
-action "Set qt theme engine"
+action "Set qt theme engine and gtk4 theme"
 if [[ $(cat /etc/environment | grep QT_QPA_PLATFORMTHEME) ]]; then
     action_skipping
 else
     action_begin
     sudo bash -c 'echo "QT_QPA_PLATFORMTHEME=qt5ct" >> /etc/environment'
+    sudo bash -c 'echo "GTK_THEME=Nordic-darker" >> /etc/environment'
+
     action_success
 fi
 
