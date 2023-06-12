@@ -2,9 +2,12 @@
 
 source functions.sh
 
+
 # ------------------------------------------------------------------------------
 # INSTALL
 # ------------------------------------------------------------------------------
+
+section_begin "public/install"
 
 settings
 update_system
@@ -22,12 +25,18 @@ install_packages "packages/trash.txt"
 
 install_dotfiles "public"
 
-exec_script "postinstall.sh"
-
-exec_script "private/install.sh"
-
 # install_system_files "etc"
 
-finalize
+section_end  "public/install"
 
 # ------------------------------------------------------------------------------
+# POSTINSTALL
+# ------------------------------------------------------------------------------
+
+exec_script "postinstall.sh"
+
+# ------------------------------------------------------------------------------
+# PRIVATE
+# ------------------------------------------------------------------------------
+
+exec_script "private/install.sh"

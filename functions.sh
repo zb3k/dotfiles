@@ -39,18 +39,43 @@ BG_GRAY='\e[47m\e[30m'
 NC='\e[0m'
 HR=$(printf "%*s" "$COLS" '' | tr ' ' '=')
 HR_ALT="$BG_YELLOW$HR$NC"
-print_header() {
+
+print_hr() {
+	echo -e "$HR$NC$1"
+}
+section_begin() {
+	print_hr
+	echo -e "$BG_CYAN SECTION BEGIN $NC $BG_BLUE $1 $NC"
+	print_hr "\n"
+}
+
+section_end() {
+	echo -e "$BG_CYAN SECTION END $NC $BG_BLUE $1 $NC\n"
+}
+
+action() {
+	ACTION_HEADER=$1
+}
+action_begin() {
 	local CURRENT_FOLDER=$(basename $(pwd))
-	echo -e "\n$BG_YELLOW   $1   $NC $BLUE$2$GRAY [ $CURRENT_FOLDER ]$NC\n"
+	local CURRENT_USER=$(whoami)
+	echo -e "$BG_YELLOW $ACTION_HEADER $NC $BLUE$1 $GRAY[ $CURRENT_FOLDER ] $MAGENTA@$CURRENT_USER $NC\n"
 	sleep $WAIT_SECONDS
 }
-
-print_success() {
-	echo -e "$BG_GREEN SUCCESS $NC"
+action_end() {
+	ACTION_HEADER=""
 }
+action_success() {
+	echo -e "$BG_GREEN SUCCESS $NC\n"
+	action_end
+}
+action_skipping() { 
+	if [[ $ACTION_HEADER ]] ; then
+		local PREFIX="$BG_YELLOW $ACTION_HEADER $NC"
+	fi
 
-print_skipping() { 
-	echo -e "$BG_BLUE SKIPPING $NC"
+	echo -e "$PREFIX $BG_GRAY SKIPPING $NC\n"
+	action_end
 }
 
 debug() { 
@@ -109,11 +134,11 @@ link_files_deep() {
 # ------------------------------------------------------------------------------
 
 settings() {
-	print_header "Settings"
-	
+	action "Settings"
 	if [ -f $SETTINGS_FILE ]; then
-		print_skipping
+		action_skipping
 	else
+		action_begin
 		# SYMLINK_DOTFILES
 		echo -e "[0] Copy (default)\n[1] Symlink\n"
 		read -r -p "Use symlink or copy dotfiles: " SYMLINK_DOTFILES
@@ -134,31 +159,34 @@ settings() {
 		echo "WAIT_SECONDS=$WAIT_SECONDS" >> $SETTINGS_FILE
 		echo "SYMLINK_DOTFILES=$SYMLINK_DOTFILES" >> $SETTINGS_FILE
 		echo "DRIVER_PACKAGES='$DRIVER_PACKAGES'" >> $SETTINGS_FILE
-		print_success
+		action_success
 	fi
 }
 
 update_system() {
-	print_header "Update system"
+	action "Update system"
+	action_begin
 	sudo pacman --noconfirm -Syu
-	print_success
+	action_success
 }
 
 install_xorg() {
-	print_header "Install xorg"
+	action "Install xorg"
 	if [[ $(yay -Q | grep "xorg-server ") ]]; then
-		print_skipping
+		action_skipping
 	else
+		action_begin
 		sudo pacman -S --noconfirm --needed xorg-server xorg-apps xorg-xinit xterm xorg-fonts-100dpi xorg-fonts-75dpi autorandr $DRIVER_PACKAGES
-		print_success
+		action_success
 	fi
 }
 
 install_aur() {
-	print_header 'Install AUR helper' 'yay'
+	action "Install AUR helper"
 	if [ -e /usr/bin/yay ]; then
-		print_skipping
+		action_skipping
 	else
+		action_begin "yay"
 		rm -rf /tmp/aur_install
 		sudo pacman -S --noconfirm --needed go git
 		git clone https://aur.archlinux.org/yay.git /tmp/aur_install
@@ -166,25 +194,28 @@ install_aur() {
 		makepkg -si --noconfirm 
 		cd $SOURCE_DIR
 		rm -rf /tmp/aur_install
+		action_success
 	fi
 }
 
 install_packages() {
-	print_header "Install packages" "$1"
 	local PWD=$(pwd);
 	local PACKAGES_FILE="$PWD/$1";
 	[[ -f $PACKAGES_FILE ]] && local LAST_PACKAGE=$(tail -n 1 $PACKAGES_FILE)
 
+	action "Install packages"
 	if [ ! $LAST_PACKAGE ] || [[ $(yay -Q | grep "$LAST_PACKAGE ") ]]; then
-		print_skipping
+		action_skipping
 	else
+		action_begin $1
 		yay --noconfirm --needed -S - < $PACKAGES_FILE
-		print_success
+		action_success
 	fi
 }
 
 install_dotfiles() {
-	print_header "Install dotfiles" "$1"
+	action "Install dotfiles"
+	action_begin "$1"
 	local PWD=$(pwd);
 	local SRC_DIR="$PWD/$1";
 	ls -bA -1 "$SRC_DIR" | while read file; do 
@@ -196,22 +227,24 @@ install_dotfiles() {
 			link "$SRC" "$TARGET"
 		fi
 	done
-	print_success
+	action_success
 }
 
 install_system_files() {
-	print_header "Install system files" "$1"
+	action "Install system files"
+	action_begin "$1"
 	local PWD=$(pwd);
 	local SRC_DIR="$PWD/$1";
 	local TARGET_DIR="/$1"
 	[[ -d "$SRC_DIR" ]] && link_files_deep "$SRC_DIR" "$TARGET_DIR"
-	print_success
+	action_success
 }
 
 exec_script() {
-	print_header "Run script" "$1"
+	action "RUN"
 	if [[ -f $1 ]]; then
-		print_success
+		action_begin $1
+		# action_success
 		local PWD=$(pwd)
 		local SCRIPT_FILE="$PWD/$1"
 		local SCRIPT_DIR=$(dirname $SCRIPT_FILE)
@@ -219,11 +252,6 @@ exec_script() {
 		$SCRIPT_FILE
 		cd $PWD
 	else
-		print_skipping
+		action_skipping
 	fi
-}
-
-finalize() {
-	print_header "Finalize"
-	print_success
 }

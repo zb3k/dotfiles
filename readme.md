@@ -6,13 +6,7 @@
 
 ## Используемое ПО
 
-- **Arch linux** 
-- **bspwm** - window manager
-- **picom** (picom-ibhagwan-git) - compositor for Xorg 
-- **polybar** - panel
-- **sxhkd** - keybinding daemon
-- **dunst** - notification daemon
-- **rofi** - app launcher
+`Arch` `bspwm` `polybar` `rofi` `dunst`
 
 ## Установка
 
@@ -24,16 +18,6 @@ cd dotfiles
 
 ## Приватные файлы конфигураций (deprecated)
 
-Вы можете дополнить установку своими собственными файлами конфигурации.
-
-Для этого необходимо создать папку "**private**" со следующей струкутой файлов:
-
-- **private/dotfiles** - папка с конфигурационными файлами (аналогична папке "**public**")
-
-- **private/packages.txt** - файл со списком пакетов которые нужно установить
-
-- **private/install.sh** - скрипт который будет автоматически запущен после вызова основного скрипта установки
-
 Пример скрипта "**private/install.sh**":
 
 ```bash
@@ -41,9 +25,9 @@ cd dotfiles
 
 source '../functions.sh'
 
-install_packages "packages.txt"
+install_packages "packages/apps.txt"
 install_dotfiles "dotfiles"
-
+exec_script "postinstall.sh"
 ```
 
 ## Горячие клавиши
@@ -55,10 +39,3 @@ install_dotfiles "dotfiles"
 - https://github.com/EliverLara/Nordic (darker branch for gtk, master branch for kvantum)
 - https://github.com/Templarian/MaterialDesign-Webfont
 - https://github.com/vinceliuice/Tela-circle-icon-theme
-
-## Postinstall 
-
-```bash
-systemctl enable bluetooth
-systemctl start bluetooth
-```
