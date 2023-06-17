@@ -61,9 +61,11 @@ action_begin() {
 	local CURRENT_USER=$(whoami)
 	echo -e "$BG_YELLOW $ACTION_HEADER $NC $BLUE$1 $GRAY[ $CURRENT_FOLDER ] $MAGENTA@$CURRENT_USER $NC\n"
 	sleep $WAIT_SECONDS
+	ACTION_PWD=$(pwd)
 }
 action_end() {
 	ACTION_HEADER=""
+	cd $ACTION_PWD
 }
 action_success() {
 	echo -e "$BG_GREEN SUCCESS $NC\n"
@@ -172,7 +174,7 @@ update_system() {
 
 install_xorg() {
 	action "Install xorg"
-	if [[ $(yay -Q | grep "xorg-server ") ]]; then
+	if [[ $(pacman -Q | grep "xorg-server ") ]]; then
 		action_skipping
 	else
 		action_begin
@@ -181,19 +183,18 @@ install_xorg() {
 	fi
 }
 
-install_aur() {
-	action "Install AUR helper"
-	if [ -e /usr/bin/yay ]; then
+install_aura() {
+	action "Install AURA"
+	if [ -e /usr/bin/aura ]; then
 		action_skipping
 	else
-		action_begin "yay"
-		rm -rf /tmp/aur_install
-		sudo pacman -S --noconfirm --needed go git
-		git clone https://aur.archlinux.org/yay.git /tmp/aur_install
-		cd /tmp/aur_install 
-		makepkg -si --noconfirm 
+		action_begin
+		rm -rf /tmp/aura_bin
+		git clone https://aur.archlinux.org/aura-bin.git /tmp/aura_bin
+		cd /tmp/aura_bin
+		makepkg -si --noconfirm  
 		cd $SOURCE_DIR
-		rm -rf /tmp/aur_install
+		rm -rf /tmp/aura_bin
 		action_success
 	fi
 }
@@ -204,11 +205,26 @@ install_packages() {
 	[[ -f $PACKAGES_FILE ]] && local LAST_PACKAGE=$(tail -n 1 $PACKAGES_FILE)
 
 	action "Install packages"
-	if [ ! $LAST_PACKAGE ] || [[ $(yay -Q | grep "$LAST_PACKAGE ") ]]; then
+	if [ ! $LAST_PACKAGE ] || [[ $(pacman -Q | grep "$LAST_PACKAGE ") ]]; then
 		action_skipping
 	else
 		action_begin $1
-		yay --noconfirm --needed -S - < $PACKAGES_FILE
+		sudo pacman --noconfirm --needed -S - < $PACKAGES_FILE
+		action_success
+	fi
+}
+
+install_aur_packages () {
+	local PWD=$(pwd);
+	local PACKAGES_FILE="$PWD/$1";
+	[[ -f $PACKAGES_FILE ]] && local LAST_PACKAGE=$(tail -n 1 $PACKAGES_FILE)
+
+	action "Install AUR packages"
+	if [ ! $LAST_PACKAGE ] || [[ $(aura -Q | grep "$LAST_PACKAGE ") ]]; then
+		action_skipping
+	else
+		action_begin $1
+		sudo aura --noconfirm --needed -Aa - < $PACKAGES_FILE
 		action_success
 	fi
 }

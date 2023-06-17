@@ -2,7 +2,8 @@
 
 # SYSTEM: Show help
 super + alt + slash
-    ~/.scripts/sxhkd-help
+	~/.config/rofi/scripts/sxhkd-help
+
 
 # SYSTEM: Open terminal
 super + space
@@ -21,7 +22,7 @@ super + Return
 
 # SYSTEM: Power menu
 super + Escape
-	~/.scripts/rofi-powermenu
+	~/.config/rofi/scripts/powermenu
 
 # SYSTEM: Reload sxhkd and bspwm
 super + alt + Escape

@@ -11,7 +11,7 @@ section_begin "public/install"
 
 settings
 update_system
-install_aur
+install_aura
 install_xorg
 
 install_packages "packages/system-alsa.txt"

@@ -1,41 +1,35 @@
 #!/bin/sh
 
+
+KEY="023aa25986fa935635e4586b59204572"
+# CITY="Moscow,RU"
+UNITS="metric"
+SYMBOL="°"
+
+COLOR_ICON="#617b94"
+COLOR_MUTED="#5c6370"
+
+ICON_TREND_UP="󰄿"
+ICON_TREND_DOWN="󰄼"
+
+API="https://api.openweathermap.org/data/2.5"
+
+# https://openweathermap.org/weather-conditions
 get_icon() {
     case $1 in
-        # Icons for weather-icons
-        01d) icon="";;
-        01n) icon="";;
-        02d) icon="";;
-        02n) icon="";;
-        03*) icon="";;
-        04*) icon="";;
-        09d) icon="";;
-        09n) icon="";;
-        10d) icon="";;
-        10n) icon="";;
-        11d) icon="";;
-        11n) icon="";;
-        13d) icon="";;
-        13n) icon="";;
-        50d) icon="";;
-        50n) icon="";;
-        *) icon="";
-
-        # Icons for Font Awesome 5 Pro
-        # 01d) icon="";;
-        # 01n) icon="";;
-        # 02d) icon="";;
-        # 02n) icon="";;
-        # 03d) icon="";;
-        # 03n) icon="";;
-        # 04*) icon="";;
-        # 09*) icon="";;
-        # 10d) icon="";;
-        # 10n) icon="";;
-        # 11*) icon="";;
-        # 13*) icon="";;
-        # 50*) icon="";;
-        # *) icon="";
+        # Material design icons
+        01d) icon="󰖙";; # clear sky (day)
+        01n) icon="󰖔";; # clear sky (night)
+        02d) icon="󰖕";; # few clouds (day)
+        02n) icon="󰼱";; # few clouds (night)
+        03*) icon="󰖐";; # scattered clouds 
+        04*) icon="󰖐";; # broken clouds
+        09*) icon="󰖖";; # shower rain 
+        10*) icon="󰖗";; # rain
+        11*) icon="󰖓";; # thunderstorm
+        13*) icon="󰖘";; # snow
+        50*) icon="󰖑";; # mist
+        *) icon="󰖙";
     esac
 
     echo $icon
@@ -52,13 +46,7 @@ get_duration() {
 
 }
 
-KEY="023aa25986fa935635e4586b59204572"
-CITY="Moscow,RU"
-UNITS="metric"
-SYMBOL="°"
-
-API="https://api.openweathermap.org/data/2.5"
-
+# Location
 if [ -n "$CITY" ]; then
     if [ "$CITY" -eq "$CITY" ] 2>/dev/null; then
         CITY_PARAM="id=$CITY"
@@ -80,35 +68,37 @@ else
     fi
 fi
 
+
 if [ -n "$current" ] && [ -n "$forecast" ]; then
     current_temp=$(echo "$current" | jq ".main.temp" | cut -d "." -f 1)
-    current_icon=$(echo "$current" | jq -r ".weather[0].icon")
+    current_icon=$(get_icon $(echo "$current" | jq -r ".weather[0].icon"))
 
     forecast_temp=$(echo "$forecast" | jq ".list[].main.temp" | cut -d "." -f 1)
-    forecast_icon=$(echo "$forecast" | jq -r ".list[].weather[0].icon")
+    forecast_icon=$(get_icon $(echo "$forecast" | jq -r ".list[].weather[0].icon"))
 
+    city_name=$(echo "$current" | jq -r ".name")
 
+    # Trend icon
     if [ "$current_temp" -gt "$forecast_temp" ]; then
-        trend=""
+        trend_icon=$ICON_TREND_DOWN
     elif [ "$forecast_temp" -gt "$current_temp" ]; then
-        trend=""
+        trend_icon=$ICON_TREND_UP
     else
-        trend=""
+        trend_icon=""
     fi
 
 
-    sun_rise=$(echo "$current" | jq ".sys.sunrise")
-    sun_set=$(echo "$current" | jq ".sys.sunset")
-    now=$(date +%s)
-
-    if [ "$sun_rise" -gt "$now" ]; then
-        daytime=" $(get_duration "$((sun_rise-now))")"
-    elif [ "$sun_set" -gt "$now" ]; then
-        daytime=" $(get_duration "$((sun_set-now))")"
-    else
-        daytime=" $(get_duration "$((sun_rise-now))")"
-    fi
-
-    # echo "$(get_icon "$current_icon") $current_temp$SYMBOL  $trend  $(get_icon "$forecast_icon") $forecast_temp$SYMBOL   $daytime"
-    echo "$current_temp$SYMBOL $trend"
+    # sun_rise=$(echo "$current" | jq ".sys.sunrise")
+    # sun_set=$(echo "$current" | jq ".sys.sunset")
+    # now=$(date +%s)
+    # if [ "$sun_rise" -gt "$now" ]; then
+    #     daytime=" $(get_duration "$((sun_rise-now))")"
+    # elif [ "$sun_set" -gt "$now" ]; then
+    #     daytime=" $(get_duration "$((sun_set-now))")"
+    # else
+    #     daytime=" $(get_duration "$((sun_rise-now))")"
+    # fi
+    
+    # echo "%{F$COLOR_ICON}$(get_icon "$current_icon")%{F-}$DEVICES $current_temp$SYMBOL  $trend  $(get_icon "$forecast_icon") $forecast_temp$SYMBOL   $daytime"
+    echo "%{F$COLOR_ICON}$current_icon%{F-} $current_temp$SYMBOL$trend_icon %{F$COLOR_MUTED}$city_name%{F-}"
 fi

@@ -8,9 +8,9 @@ if [ -f "$HOME/.Xmodmap" ]; then
     xmodmap "$HOME/.Xmodmap"
 fi
 
-# Private part .xinitrc
-# if [ -f "$HOME/.private/.xinitrc" ]; then
-#     source $HOME/.private/.xinitrc
-# fi
+Private part .xinitrc
+if [ -f "$HOME/.xinitrc-private" ]; then
+    source $HOME/.xinitrc-private
+fi
 
 exec bspwm

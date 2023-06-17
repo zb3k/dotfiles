@@ -46,7 +46,6 @@ bspc config top_padding 0
 bspc config left_padding 0
 bspc config right_padding 0
 bspc config bottom_padding 0
-# ~/.scripts/bspwm-toggle-gap
 
 #Various settings
 bspc config gapless_monocle true #Default setup uses negative padding, and gapless monocle looks really weird like that
@@ -77,27 +76,40 @@ bspc config split_ratio 0.50
 # bspc rule -a Fusion360:Fusion360.exe desktop="NOTE" state=fullscreen monitor=DP-0 layer=above
 # bspc rule -a fusion360:fusion360.exe desktop="NOTE" state=fullscreen monitor=DP-0 layer=above
 
-bspc rule -a fusion360.exe desktop="3D" monitor=DP-0
+bspc rule -a fl64.exe desktop="3D" follow=on layer=above state=floating
+
+bspc rule -a fusion360.exe desktop="3D" 
 # bspc rule -a fusion360:fusion360.exe desktop="MAIL" follow=on monitor=DP-0 layer=above state=fullscreen
 # bspc rule -a Fusion360:Fusion360.exe desktop="3D" follow=on monitor=DP-0 layer=above state=fullscreen
 
 # bspc rule -a Fusion360.exe desktop="NOTE" follow=on state=floating center=true
 
+# TERM
 bspc rule -a kitty desktop="TERM" follow=on
 bspc rule -a Alacritty desktop="TERM" follow=on
+
+# WEB
 bspc rule -a firefox desktop="WEB" follow=on
 
+# CODE
 bspc rule -a Code desktop="CODE" follow=on
 bspc rule -a VSCodium desktop="CODE" follow=on
 
-
-bspc rule -a WebApp-TickTick5612 desktop="TODO" follow=on
-bspc rule -a marktext desktop="NOTE" follow=on
+# DB
 bspc rule -a beekeeper-studio desktop="DB" follow=on
-bspc rule -a WebApp-WhatsApp4749 desktop="CHAT" follow=on
-# bspc rule -a TelegramDesktop desktop="CHAT" follow=on
+
+# bspc rule -a WebApp-TickTick5612 desktop="TODO" follow=on
+bspc rule -a marktext desktop="NOTE" follow=on
+
+# CHAT
+bspc rule -a WebApp-WhatsApp8989 desktop="CHAT" follow=on
+bspc rule -a TelegramDesktop desktop="CHAT" follow=on
 # bspc rule -a KotatogramDesktop desktop="CHAT" follow=on
+
+# MAIL
 bspc rule -a Mailspring desktop="MAIL" follow=on
+
+# 3D
 # bspc rule -a FreeCAD-link desktop="3D" follow=on
 
 
@@ -108,6 +120,7 @@ bspc rule -a KeePassXC state=floating center=true sticky=on
 bspc rule -a ksnip state=floating center=true
 bspc rule -a Colorgrab state=floating center=true
 bspc rule -a Qalculate-gtk state=floating center=true sticky=on
+bspc rule -a QjackCtl state=floating center=true
 
 
 # bspc rule -a kitty desktop='^1' state=floating follow=on
